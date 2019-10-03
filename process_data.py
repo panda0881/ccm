@@ -59,7 +59,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         tmp_example['match_triples'] = match_triples
         all_examples_after_match.append(tmp_example)
     with open(output_file_name, 'w') as f:
-        for tmp_example in all_examples_after_match:
+        for tmp_example in tqdm(all_examples_after_match):
             f.write(json.dumps(tmp_example))
             f.write('\n')
 
@@ -97,3 +97,6 @@ current_kg['indexToCSKTriple'] = {v: k for k,v in current_kg['dict_csk_triples']
 convert_data('dialog_dataset/formatted_train.json', 'data/none/trainset.txt', current_kg)
 convert_data('dialog_dataset/formatted_dev.json', 'data/none/validset.txt', current_kg)
 convert_data('dialog_dataset/formatted_test.json', 'data/none/testset.txt', current_kg)
+with open('data/none/resource.txt', 'w') as f:
+    f.write(json.dumps(current_kg))
+    f.write('\n')
