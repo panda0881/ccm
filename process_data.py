@@ -66,6 +66,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
             print(tmp_example)
             f.write(json.dumps(tmp_example))
             f.write('\n')
+            break
 
 
 current_kg = dict()
