@@ -68,28 +68,40 @@ def build_vocab(path, raw_vocab, trans='transE'):
 
     print("Creating entity vocabulary...")
     entity_list = ['_NONE', '_PAD_H', '_PAD_R', '_PAD_T', '_NAF_H', '_NAF_R', '_NAF_T']
-    with open('%s/entity.txt' % path) as f:
-        for i, line in enumerate(f):
-            e = line.strip()
-            entity_list.append(e)
+    try:
+        with open('%s/entity.txt' % path) as f:
+            for i, line in enumerate(f):
+                e = line.strip()
+                entity_list.append(e)
+    except FileNotFoundError:
+        print('we do not find entity.txt')
+        pass
 
     print("Creating relation vocabulary...")
     relation_list = []
-    with open('%s/relation.txt' % path) as f:
-        for i, line in enumerate(f):
-            r = line.strip()
-            relation_list.append(r)
+    try:
+        with open('%s/relation.txt' % path) as f:
+            for i, line in enumerate(f):
+                r = line.strip()
+                relation_list.append(r)
+    except FileNotFoundError:
+        print('we do not find relation.txt')
+        pass
 
     print("Loading word vectors...")
     vectors = {}
-    with open('%s/glove.840B.300d.txt' % path) as f:
-        for i, line in enumerate(f):
-            if i % 100000 == 0:
-                print("    processing line %d" % i)
-            s = line.strip()
-            word = s[:s.find(' ')]
-            vector = s[s.find(' ')+1:]
-            vectors[word] = vector
+    try:
+        with open('glove.840B.300d.txt') as f:
+            for i, line in enumerate(f):
+                if i % 100000 == 0:
+                    print("    processing line %d" % i)
+                s = line.strip()
+                word = s[:s.find(' ')]
+                vector = s[s.find(' ')+1:]
+                vectors[word] = vector
+    except FileNotFoundError:
+        print('we do not find glove.840B.300d.txt')
+        pass
     
     embed = []
     for word in vocab_list:
@@ -102,17 +114,25 @@ def build_vocab(path, raw_vocab, trans='transE'):
             
     print("Loading entity vectors...")
     entity_embed = []
-    with open('%s/entity_%s.txt' % (path, trans)) as f:
-        for i, line in enumerate(f):
-            s = line.strip().split('\t')
-            entity_embed.append(map(float, s))
+    try:
+        with open('%s/entity_%s.txt' % (path, trans)) as f:
+            for i, line in enumerate(f):
+                s = line.strip().split('\t')
+                entity_embed.append(map(float, s))
+    except FileNotFoundError:
+        print('we do not find entity vector')
+        pass
 
     print("Loading relation vectors...")
     relation_embed = []
-    with open('%s/relation_%s.txt' % (path, trans)) as f:
-        for i, line in enumerate(f):
-            s = line.strip().split('\t')
-            relation_embed.append(s)
+    try:
+        with open('%s/relation_%s.txt' % (path, trans)) as f:
+            for i, line in enumerate(f):
+                s = line.strip().split('\t')
+                relation_embed.append(s)
+    except FileNotFoundError:
+        print('we do not find the relation vector')
+        pass
 
     entity_relation_embed = np.array(entity_embed+relation_embed, dtype=np.float32)
     entity_embed = np.array(entity_embed, dtype=np.float32)
