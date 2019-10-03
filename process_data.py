@@ -16,6 +16,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
 
     all_examples_after_match = list()
     for tmp_example in tqdm(test_data):
+        new_example = dict()
         post = tmp_example['post']
         index = 0
         for word in post:
@@ -28,9 +29,9 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
             except:
                 post_triples.append(0)
 
-        tmp_example['post_triples'] = post_triples
-        tmp_example['all_triples'] = all_triples
-        tmp_example['all_entities'] = all_entities
+        new_example['post_triples'] = post_triples
+        new_example['all_triples'] = all_triples
+        new_example['all_entities'] = all_entities
 
         response_triples = []
         match_index = []
@@ -54,10 +55,12 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
                 response_triples.append(-1)
                 match_index.append([-1, -1])
 
-        tmp_example['response_triples'] = response_triples
-        tmp_example['match_index'] = match_index
-        tmp_example['match_triples'] = match_triples
-        all_examples_after_match.append(tmp_example)
+        new_example['response_triples'] = response_triples
+        new_example['match_index'] = match_index
+        new_example['match_triples'] = match_triples
+        new_example['post'] = tmp_example['post']
+        new_example['response'] = tmp_example['response']
+        all_examples_after_match.append(new_example)
     with open(output_file_name, 'w') as f:
         for tmp_example in tqdm(all_examples_after_match):
             print(tmp_example)
