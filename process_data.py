@@ -57,8 +57,8 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         new_example['response_triples'] = response_triples
         new_example['match_index'] = match_index
         new_example['match_triples'] = match_triples
-        new_example['post'] = tmp_example['post']
-        new_example['response'] = tmp_example['response']
+        new_example['post'] = tmp_example['post'].split(' ')
+        new_example['response'] = tmp_example['response'].split(' ')
         all_examples_after_match.append(new_example)
     with open(output_file_name, 'w') as f:
         for tmp_example in tqdm(all_examples_after_match):
