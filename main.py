@@ -69,7 +69,7 @@ def build_vocab(path, raw_vocab, trans='transE'):
     print("Creating entity vocabulary...")
     entity_list = ['_NONE', '_PAD_H', '_PAD_R', '_PAD_T', '_NAF_H', '_NAF_R', '_NAF_T']
     try:
-        with open('%s/entity.txt' % path) as f:
+        with open('%s/entity.txt' % path, 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 e = line.strip()
                 entity_list.append(e)
@@ -80,7 +80,7 @@ def build_vocab(path, raw_vocab, trans='transE'):
     print("Creating relation vocabulary...")
     relation_list = []
     try:
-        with open('%s/relation.txt' % path) as f:
+        with open('%s/relation.txt' % path, 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 r = line.strip()
                 relation_list.append(r)
@@ -91,7 +91,7 @@ def build_vocab(path, raw_vocab, trans='transE'):
     print("Loading word vectors...")
     vectors = {}
     try:
-        with open('glove.840B.300d.txt') as f:
+        with open('glove.840B.300d.txt', 'r', encoding='utf-8') as f:
             for i, line in enumerate(f):
                 if i % 100000 == 0:
                     print("    processing line %d" % i)
