@@ -60,6 +60,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         all_examples_after_match.append(tmp_example)
     with open(output_file_name, 'w') as f:
         for tmp_example in tqdm(all_examples_after_match):
+            print(tmp_example)
             f.write(json.dumps(tmp_example))
             f.write('\n')
 
