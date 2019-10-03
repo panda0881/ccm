@@ -2,7 +2,7 @@ import json
 
 
 dialog_train = list()
-with open('dialog_dataset/dialogues_train.txt', 'r') as f:
+with open('dialog_dataset/dialogues_train.txt', 'r', encoding='utf-8') as f:
     for line in f:
         tmp_sentences = line.split('__eou__')[:-1]
         sentence_number = len(tmp_sentences)
@@ -16,7 +16,7 @@ with open('dialog_dataset/formatted_train.json', 'w') as f:
     json.dump(dialog_train, f)
 
 dialog_dev = list()
-with open('dialog_dataset/dialogues_validation.txt', 'r') as f:
+with open('dialog_dataset/dialogues_validation.txt', 'r', encoding='utf-8') as f:
     for line in f:
         tmp_sentences = line.split('__eou__')[:-1]
         sentence_number = len(tmp_sentences)
@@ -30,7 +30,7 @@ with open('dialog_dataset/formatted_dev.json', 'w') as f:
     json.dump(dialog_dev, f)
 
 dialog_test = list()
-with open('dialog_dataset/dialogues_test.txt', 'r') as f:
+with open('dialog_dataset/dialogues_test.txt', 'r', encoding='utf-8') as f:
     for line in f:
         tmp_sentences = line.split('__eou__')[:-1]
         sentence_number = len(tmp_sentences)
