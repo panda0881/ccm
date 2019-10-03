@@ -13,7 +13,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
     all_examples_after_match = list()
     for tmp_example in tqdm(test_data):
         new_example = dict()
-        post = tmp_example['post'].split(' ')
+        post = tmp_example['post'].split(' ')[:-1]
         index = 0
         post_triples = []
         all_triples = []
@@ -35,7 +35,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         response_triples = []
         match_index = []
         match_triples = []
-        for word in tmp_example['response'].split(' '):
+        for word in tmp_example['response'].split(' ')[:-1]:
             try:
                 found = False
                 entityIndex = tmp_kg['dict_csk_entities'][word]
@@ -57,8 +57,8 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         new_example['response_triples'] = response_triples
         new_example['match_index'] = match_index
         new_example['match_triples'] = match_triples
-        new_example['post'] = tmp_example['post'].split(' ')
-        new_example['response'] = tmp_example['response'].split(' ')
+        new_example['post'] = tmp_example['post'].split(' ')[:-1]
+        new_example['response'] = tmp_example['response'].split(' ')[:-1]
         all_examples_after_match.append(new_example)
     with open(output_file_name, 'w') as f:
         for tmp_example in tqdm(all_examples_after_match):
