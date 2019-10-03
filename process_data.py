@@ -35,7 +35,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         response_triples = []
         match_index = []
         match_triples = []
-        for word in tmp_example['response'].split(' ')
+        for word in tmp_example['response'].split(' '):
             try:
                 found = False
                 entityIndex = tmp_kg['dict_csk_entities'][word]
