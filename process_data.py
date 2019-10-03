@@ -10,15 +10,14 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
     print('input:', input_file_name, 'output:', output_file_name)
     with open(input_file_name, 'r') as f:
         test_data = json.load(f)
-    post_triples = []
-    all_triples = []
-    all_entities = []
-
     all_examples_after_match = list()
     for tmp_example in tqdm(test_data):
         new_example = dict()
         post = tmp_example['post']
         index = 0
+        post_triples = []
+        all_triples = []
+        all_entities = []
         for word in post:
             try:
                 entityIndex = tmp_kg['dict_csk_entities'][word]
