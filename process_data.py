@@ -75,6 +75,8 @@ current_kg['postEntityToOtherCSKTripleEntities'] = {}
 current_kg['dict_csk_triples'] = dict()
 current_kg['csk_triples'] = list()
 current_kg['csk_entities'] = list()
+current_kg['vocab_dict'] = dict()
+current_kg['dict_csk'] = dict()
 index = 0
 for triple in current_kg['csk_triples']:
     firstEntity = triple.split(',')[0]
