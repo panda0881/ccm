@@ -99,8 +99,8 @@ current_kg['indexToCSKTriple'] = {v: k for k,v in current_kg['dict_csk_triples']
 
 # print(str(test))
 
-convert_data('dialog_dataset/formatted_train.json', 'data/none/trainset.txt', current_kg)
-convert_data('dialog_dataset/formatted_dev.json', 'data/none/validset.txt', current_kg)
+# convert_data('dialog_dataset/formatted_train.json', 'data/none/trainset.txt', current_kg)
+# convert_data('dialog_dataset/formatted_dev.json', 'data/none/validset.txt', current_kg)
 convert_data('dialog_dataset/formatted_test.json', 'data/none/testset.txt', current_kg)
 with open('data/none/resource.txt', 'w') as f:
     f.write(json.dumps(current_kg))
