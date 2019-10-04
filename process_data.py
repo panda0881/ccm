@@ -27,8 +27,8 @@ def train_TransE(target_folder):
     con.set_in_path(target_folder+'/')
     con.set_log_on(1)  # set to 1 to print the loss
 
-    con.set_work_threads(4)
-    con.set_train_times(1000)
+    con.set_work_threads(30)
+    con.set_train_times(100)
     con.set_nbatches(512)
     con.set_alpha(0.001)
     con.set_margin(1.0)
@@ -39,7 +39,7 @@ def train_TransE(target_folder):
     con.set_opt_method("SGD")
 
     # Models will be exported via tf.Saver() automatically.
-    con.set_export_files(target_folder+"/model.vec.tf", steps=500)
+    con.set_export_files(target_folder+"/model.vec.tf", steps=50)
     # Model parameters will be exported to json files automatically.
     con.set_out_files(target_folder + "/embedding.vec.json")
     # Initialize experimental settings.
