@@ -27,8 +27,8 @@ def train_TransE(target_folder):
     con.set_in_path(target_folder+'/')
 
     con.set_work_threads(4)
-    con.set_train_times(5)
-    con.set_nbatches(100)
+    con.set_train_times(10)
+    con.set_nbatches(5)
     con.set_alpha(0.001)
     con.set_margin(1.0)
     con.set_bern(0)
