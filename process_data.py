@@ -48,13 +48,14 @@ def train_TransE(target_folder):
     # print(con.get_parameter_lists())
     con.set_model(TransE)
     # Train the model.
-    print(con.get_parameter_lists())
-    print(con.get_parameters())
+    # print(con.get_parameter_lists())
+    # print(con.get_parameters())
     con.run()
 
     embeddings = con.get_parameters()
-    print(con.get_parameter_lists())
-    print(con.model.parameter_lists)
+    # print(con.get_parameter_lists())
+    print(con.model.ent_embeddings)
+    print(con.model.rel_embeddings)
 
 
     # # we need to convert the embedding to txt
