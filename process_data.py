@@ -48,14 +48,17 @@ def train_TransE(target_folder):
     # Train the model.
     con.run()
 
+    embeddings = con.get_parameters()
+
+
     # # we need to convert the embedding to txt
     # with open(target_folder + "/embedding.vec.json", "r") as f:
     #     dic = json.load(f)
     #
-    # print('dic:')
+    print('dic:')
     # print(dic)
-    # for key in dic:
-    #     print(key)
+    for key in embeddings:
+        print(key)
     #
     # ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
     #
