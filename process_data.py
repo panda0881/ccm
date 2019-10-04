@@ -56,7 +56,7 @@ def train_TransE(target_folder):
     # print(con.get_parameter_lists())
     print(con.trainModel.ent_embeddings)
     print(con.trainModel.rel_embeddings)
-
+    print(con.trainModel.parameter_lists)
 
     # # we need to convert the embedding to txt
     # with open(target_folder + "/embedding.vec.json", "r") as f:
