@@ -28,8 +28,8 @@ def train_TransE(target_folder):
     con.set_log_on(1)  # set to 1 to print the loss
 
     con.set_work_threads(30)
-    con.set_train_times(100)
-    con.set_nbatches(512)
+    con.set_train_times(10)
+    con.set_nbatches(5)
     con.set_alpha(0.001)
     con.set_margin(1.0)
     con.set_bern(0)
@@ -54,6 +54,7 @@ def train_TransE(target_folder):
 
     embeddings = con.get_parameters()
     print(con.get_parameter_lists())
+    print(con.model.parameter_lists)
 
 
     # # we need to convert the embedding to txt
