@@ -49,6 +49,7 @@ def train_TransE(target_folder):
     con.run()
 
     embeddings = con.get_parameters()
+    print(con.get_parameter_lists())
 
 
     # # we need to convert the embedding to txt
