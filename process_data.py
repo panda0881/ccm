@@ -48,20 +48,22 @@ def train_TransE(target_folder):
     # Train the model.
     con.run()
 
-    # we need to convert the embedding to txt
-    with open(target_folder + "/embedding.vec.json", "r") as f:
-        dic = json.load(f)
-
-    for key in dic:
-        print(key)
-
-    ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
-
-    with open(target_folder+'/entity_vector.json', 'w') as f:
-        json.dump(ent_embs, f)
-
-    with open(target_folder+'/relation_vector.json', 'w') as f:
-        json.dump(rel_embs, f)
+    # # we need to convert the embedding to txt
+    # with open(target_folder + "/embedding.vec.json", "r") as f:
+    #     dic = json.load(f)
+    #
+    # print('dic:')
+    # print(dic)
+    # for key in dic:
+    #     print(key)
+    #
+    # ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
+    #
+    # with open(target_folder+'/entity_vector.json', 'w') as f:
+    #     json.dump(ent_embs, f)
+    #
+    # with open(target_folder+'/relation_vector.json', 'w') as f:
+    #     json.dump(rel_embs, f)
 
 
 def prepare_kg(source_resource, target_folder):
@@ -269,5 +271,5 @@ def process_data(tmp_location):
 
 
 prepare_kg('kgs/conceptnet.txt', 'data/conceptnet')
-process_data('data/conceptnet')
+# process_data('data/conceptnet')
 
