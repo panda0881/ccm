@@ -24,7 +24,7 @@ import numpy as np
 def train_TransE(target_folder):
     con = OpenKE.config.Config()
     # Input training files from benchmarks/FB15K/ folder.
-    con.set_in_path(target_folder)
+    con.set_in_path(target_folder+'/')
 
     con.set_work_threads(4)
     con.set_train_times(5)
@@ -173,7 +173,7 @@ def prepare_kg(source_resource, target_folder):
             f.write('\n')
     print('Finish preparing the kg')
     print('Start to train the TransE')
-    train_TransE(target_folder+'/')
+    train_TransE(target_folder)
 
 def convert_data(input_file_name, output_file_name, tmp_kg):
     print('input:', input_file_name, 'output:', output_file_name)
