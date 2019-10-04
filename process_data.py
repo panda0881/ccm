@@ -107,3 +107,5 @@ convert_data('dialog_dataset/formatted_test.json', 'data/none/testset.txt', curr
 with open('data/none/resource.txt', 'w') as f:
     f.write(json.dumps(current_kg))
     f.write('\n')
+
+
