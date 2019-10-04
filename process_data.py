@@ -46,7 +46,7 @@ def train_TransE(target_folder):
     # Set the knowledge embedding model
     con.set_model(OpenKE.models.TransE)
     # Train the model.
-    print(con.get_parameter_lists())
+    print(con.get_parameters())
     con.run()
 
     embeddings = con.get_parameters()
