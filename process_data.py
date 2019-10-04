@@ -272,5 +272,5 @@ def process_data(tmp_location):
 
 
 prepare_kg('kgs/conceptnet.txt', 'data/conceptnet')
-# process_data('data/conceptnet')
+process_data('data/conceptnet')
 
