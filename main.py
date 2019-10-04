@@ -173,9 +173,9 @@ def gen_batched_data(data):
         responses.append(padding(item['response'], decoder_len))
         posts_length.append(len(item['post'])+1)
         responses_length.append(len(item['response'])+1)
-        all_triples.append(padding_triple([[csk_triples[x].split(', ') for x in triple] for triple in item['all_triples']], triple_num, triple_len))
+        all_triples.append(padding_triple([[csk_triples[x].split('$$') for x in triple] for triple in item['all_triples']], triple_num, triple_len))
         post_triples.append([[x] for x in item['post_triples']] + [[0]] * (encoder_len - len(item['post_triples'])))
-        response_triples.append([NAF] + [NAF if x == -1 else csk_triples[x].split(', ') for x in item['response_triples']] + [NAF] * (decoder_len - 1 - len(item['response_triples'])))
+        response_triples.append([NAF] + [NAF if x == -1 else csk_triples[x].split('$$') for x in item['response_triples']] + [NAF] * (decoder_len - 1 - len(item['response_triples'])))
         match_index = []
         for idx, x in enumerate(item['match_index']):
             _index = [-1] * triple_num
@@ -300,7 +300,7 @@ def test(sess, saver, data_dev, setnum=5000):
                 triples = [csk_triples[tri] for triple in triples for tri in triple]
                 match_triples = [csk_triples[triple] for triple in match_triples]
                 entities = [csk_entities[x] for entity in entities for x in entity]
-                matches = [x for triple in match_triples for x in [triple.split(', ')[0], triple.split(', ')[2]] if x in response]
+                matches = [x for triple in match_triples for x in [triple.split('$$')[0], triple.split('$$')[2]] if x in response]
                 
                 for word in result:
                     if word not in stopwords and word in entities:

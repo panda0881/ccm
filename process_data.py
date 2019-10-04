@@ -75,7 +75,7 @@ def prepare_kg(source_resource, target_folder):
             tmp_head = tmp_words[1]
             tmp_relation = tmp_words[0]
             tmp_tail = tmp_words[2]
-            tmp_triplet = tmp_head+','+tmp_relation+','+tmp_tail
+            tmp_triplet = tmp_head+'$$'+tmp_relation+'$$'+tmp_tail
             current_kg['csk_triples'].append(tmp_triplet)
             current_kg['csk_entities'].append(tmp_head)
             current_kg['csk_entities'].append(tmp_tail)
@@ -92,7 +92,7 @@ def prepare_kg(source_resource, target_folder):
             tmp_head = tmp_words[1]
             tmp_relation = tmp_words[0]
             tmp_tail = tmp_words[2]
-            tmp_triplet = tmp_head+','+tmp_relation+','+tmp_tail
+            tmp_triplet = tmp_head+'$$'+tmp_relation+'$$'+tmp_tail
             current_kg['csk_triples'].append(tmp_triplet)
             current_kg['csk_entities'].append(tmp_head)
             current_kg['csk_entities'].append(tmp_tail)
@@ -131,18 +131,18 @@ def prepare_kg(source_resource, target_folder):
         f.write(str(len(current_kg['csk_triples'])))
         f.write('\n')
         for tmp_triplet in current_kg['csk_triples']:
-            print(tmp_triplet)
-            if tmp_triplet.split(',')[0] in current_kg['csk_entities']:
-                print('lalal')
-            else:
-                print('wuwuw')
-            head_id = current_kg['dict_csk'][tmp_triplet.split(',')[0]]
-            if tmp_triplet.split(',')[2] in current_kg['csk_entities']:
-                print('lalal')
-            else:
-                print('wuwuw')
-            tail_id = current_kg['dict_csk'][tmp_triplet.split(',')[2]]
-            relation_id = current_kg['dict_csk_relations'][tmp_triplet.split(',')[1]]
+            # print(tmp_triplet)
+            # if tmp_triplet.split(',')[0] in current_kg['csk_entities']:
+            #     print('lalal')
+            # else:
+            #     print('wuwuw')
+            head_id = current_kg['dict_csk'][tmp_triplet.split('$$')[0]]
+            # if tmp_triplet.split(',')[2] in current_kg['csk_entities']:
+            #     print('lalal')
+            # else:
+            #     print('wuwuw')
+            tail_id = current_kg['dict_csk'][tmp_triplet.split('$$')[2]]
+            relation_id = current_kg['dict_csk_relations'][tmp_triplet.split('$$')[1]]
             f.write(head_id)
             f.write('\t')
             f.write(tail_id)
@@ -241,8 +241,8 @@ def process_data(tmp_location):
     current_kg['postEntityToOtherCSKTripleEntities'] = {}
     index = 0
     for triple in current_kg['csk_triples']:
-        firstEntity = triple.split(',')[0]
-        secondEntity = triple.split(',')[2].strip()
+        firstEntity = triple.split('$$')[0]
+        secondEntity = triple.split('$$')[2].strip()
         if(not firstEntity in current_kg['postEntityToCSKTripleIndex']):
             current_kg['postEntityToCSKTripleIndex'][firstEntity] = []
         current_kg['postEntityToCSKTripleIndex'][firstEntity].append(index)
