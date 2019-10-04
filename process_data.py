@@ -52,28 +52,28 @@ def train_TransE(target_folder):
     # print(con.get_parameters())
     con.run()
 
-    embeddings = con.get_parameters()
+    # embeddings = con.get_parameters()
     # print(con.get_parameter_lists())
-    print(con.trainModel.ent_embeddings)
-    print(con.trainModel.rel_embeddings)
-    print(con.trainModel.parameter_lists)
+    # print(con.trainModel.ent_embeddings)
+    # print(con.trainModel.rel_embeddings)
+    # print(con.trainModel.parameter_lists)
 
     # # we need to convert the embedding to txt
-    # with open(target_folder + "/embedding.vec.json", "r") as f:
-    #     dic = json.load(f)
+    with open(target_folder + "/embedding.vec.json", "r") as f:
+        dic = json.load(f)
     #
-    print('dic:')
-    print(embeddings)
-    for key in embeddings:
-        print(key)
+    # print('dic:')
+    # print(embeddings)
+    # for key in embeddings:
+    #     print(key)
     #
-    # ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
-    #
-    # with open(target_folder+'/entity_vector.json', 'w') as f:
-    #     json.dump(ent_embs, f)
-    #
-    # with open(target_folder+'/relation_vector.json', 'w') as f:
-    #     json.dump(rel_embs, f)
+    ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
+
+    with open(target_folder+'/entity_vector.json', 'w') as f:
+        json.dump(ent_embs, f)
+
+    with open(target_folder+'/relation_vector.json', 'w') as f:
+        json.dump(rel_embs, f)
 
 
 def prepare_kg(source_resource, target_folder):
