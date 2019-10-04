@@ -27,7 +27,7 @@ def train_TransE(target_folder):
     con.set_in_path(target_folder)
 
     con.set_work_threads(4)
-    con.set_train_times(500)
+    con.set_train_times(50)
     con.set_nbatches(100)
     con.set_alpha(0.001)
     con.set_margin(1.0)
@@ -69,6 +69,7 @@ def prepare_kg(source_resource, target_folder):
     all_vocab = list()
 
     with open('kgs/conceptnet.txt', 'r', encoding='utf-8') as f:
+        print('We are working on kg:', 'kgs/conceptnet.txt')
         for line in f:
             tmp_words = line[:-1].split('\t')
             tmp_head = tmp_words[1]
@@ -85,6 +86,7 @@ def prepare_kg(source_resource, target_folder):
                 all_vocab.append(w)
 
     with open(source_resource, 'r', encoding='utf-8') as f:
+        print('We are working on kg:', source_resource)
         for line in f:
             tmp_words = line[:-1].split('\t')
             tmp_head = tmp_words[1]
@@ -110,16 +112,16 @@ def prepare_kg(source_resource, target_folder):
     current_kg['dict_csk_relations'] = dict()
 
     for w in all_vocab:
-        current_kg['vocab_dict'][w] = len(current_kg['vocab_dict'])
+        current_kg['vocab_dict'][w] = str(len(current_kg['vocab_dict']))
 
     for tmp_concept in current_kg['csk_entities']:
-        current_kg['dict_csk'][tmp_concept] = len(current_kg['dict_csk'])
+        current_kg['dict_csk'][tmp_concept] = str(len(current_kg['dict_csk']))
 
     for tmp_relation in current_kg['csk_relations']:
-        current_kg['dict_csk_relations'][tmp_relation] = len(current_kg['dict_csk_relations'])
+        current_kg['dict_csk_relations'][tmp_relation] = str(len(current_kg['dict_csk_relations']))
 
     for tmp_triplet in current_kg['csk_triples']:
-        current_kg['dict_csk_triples'][tmp_triplet] = len(current_kg['dict_csk_triples'])
+        current_kg['dict_csk_triples'][tmp_triplet] = str(len(current_kg['dict_csk_triples']))
 
     with open(target_folder+'/current_kg.json', 'w') as f:
         json.dump(current_kg, f)
@@ -127,7 +129,7 @@ def prepare_kg(source_resource, target_folder):
     print('Start to train the TransE')
 
     with open(target_folder+'/train2id.txt', 'w') as f:
-        f.write(len(current_kg['csk_triples']))
+        f.write(str(len(current_kg['csk_triples'])))
         f.write('\n')
         for tmp_triplet in current_kg['csk_triples']:
             head_id = current_kg['dict_csk'][tmp_triplet.split(',')[0]]
@@ -140,7 +142,7 @@ def prepare_kg(source_resource, target_folder):
             f.write(relation_id)
             f.write('\n')
     with open(target_folder+'/entity2id.txt', 'w') as f:
-        f.write(len(current_kg['csk_entities']))
+        f.write(str(len(current_kg['csk_entities'])))
         f.write('\n')
         for tmp_entity in current_kg['csk_entities']:
             f.write(tmp_entity)
@@ -149,7 +151,7 @@ def prepare_kg(source_resource, target_folder):
             f.write('\n')
 
     with open(target_folder+'/relation2id.txt', 'w') as f:
-        f.write(len(current_kg['csk_relations']))
+        f.write(str(len(current_kg['csk_relations'])))
         f.write('\n')
         for tmp_relation in current_kg['csk_relations']:
             f.write(tmp_relation)
