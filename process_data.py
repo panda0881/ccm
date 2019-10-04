@@ -52,7 +52,8 @@ def train_TransE(target_folder):
     with open(target_folder + "/embedding.vec.json", "r") as f:
         dic = json.load(f)
 
-    print(dic.keys)
+    for key in dic:
+        print(key)
 
     ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
 
