@@ -1,7 +1,7 @@
 import ujson as json
 
 
-with open('kgs/lemmatized_commonsense_knowledge.json', 'r') as f:
+with open('kgs/lemmatized_commonsense_knowledge.json', 'r', encoding='utf-8') as f:
     test_data = json.load(f)
 
 with open('kgs/conceptnet.txt', 'w') as f:
