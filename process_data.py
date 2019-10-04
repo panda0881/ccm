@@ -27,7 +27,7 @@ def train_TransE(target_folder):
     con.set_in_path(target_folder)
 
     con.set_work_threads(4)
-    con.set_train_times(50)
+    con.set_train_times(5)
     con.set_nbatches(100)
     con.set_alpha(0.001)
     con.set_margin(1.0)
@@ -51,6 +51,8 @@ def train_TransE(target_folder):
     # we need to convert the embedding to txt
     with open(target_folder + "/embedding.vec.json", "r") as f:
         dic = json.load(f)
+
+    print(dic.keys)
 
     ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
 
