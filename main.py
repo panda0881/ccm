@@ -33,8 +33,8 @@ csk_triples, csk_entities, kb_dict = [], [], []
 def prepare_data(path, is_train=True):
     global csk_entities, csk_triples, kb_dict
     
-    with open('%s/resource.txt' % path) as f:
-        d = json.loads(f.readline())
+    with open(path + '/current_kg.json', 'r') as f:
+        d = json.load(f)
     
     csk_triples = d['csk_triples']
     csk_entities = d['csk_entities']
@@ -115,10 +115,12 @@ def build_vocab(path, raw_vocab, trans='transE'):
     print("Loading entity vectors...")
     entity_embed = []
     try:
-        with open('%s/entity_%s.txt' % (path, trans)) as f:
-            for i, line in enumerate(f):
-                s = line.strip().split('\t')
-                entity_embed.append(map(float, s))
+        # with open('%s/entity_%s.txt' % (path, trans)) as f:
+        #     for i, line in enumerate(f):
+        #         s = line.strip().split('\t')
+        #         entity_embed.append(map(float, s))
+        with open(path+'/entity_vector.json', 'r') as f:
+            entity_embed = json.load(f)
     except FileNotFoundError:
         print('we do not find entity vector')
         pass
@@ -126,10 +128,12 @@ def build_vocab(path, raw_vocab, trans='transE'):
     print("Loading relation vectors...")
     relation_embed = []
     try:
-        with open('%s/relation_%s.txt' % (path, trans)) as f:
-            for i, line in enumerate(f):
-                s = line.strip().split('\t')
-                relation_embed.append(s)
+        # with open('%s/relation_%s.txt' % (path, trans)) as f:
+        #     for i, line in enumerate(f):
+        #         s = line.strip().split('\t')
+        #         relation_embed.append(s)
+        with open(path+'/relation_vector.json', 'r') as f:
+            relation_embed = json.load(f)
     except FileNotFoundError:
         print('we do not find the relation vector')
         pass

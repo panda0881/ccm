@@ -1,10 +1,162 @@
 import ujson as json
 from tqdm import tqdm
-# test = {"post": ["you", "mean", "the", "occupation", "that", "did", "happen", "?"], "response": ["no", "i", "mean", "the", "fighting", "invasion", "that", "the", "military", "made", "so", "many", "purple", "hearts", "for", "in", "anticipation", "for", "that", "we", "have", "n't", "used", "up", "to", "this", "day", "."]}
-# f = open('resource.txt')
-# data = json.load(f)
-# f.close()
+import OpenKE.config
+import OpenKE.models
+import tensorflow as tf
+import numpy as np
 
+# with open('kgs/lemmatized_commonsense_knowledge.json', 'r', encoding='utf-8') as f:
+#     test_data = json.load(f)
+#
+# with open('kgs/conceptnet.txt', 'w', encoding='utf-8') as f:
+#     for r in test_data:
+#         for tmp_k in tqdm(test_data[r]):
+#             # print(tmp_k)
+#             f.write(r)
+#             f.write('\t')
+#             f.write(tmp_k['head'])
+#             f.write('\t')
+#             f.write(tmp_k['tail'])
+#             f.write('\n')
+#             # break
+
+
+def train_TransE(target_folder):
+    con = OpenKE.config.Config()
+    # Input training files from benchmarks/FB15K/ folder.
+    con.set_in_path(target_folder)
+
+    con.set_work_threads(4)
+    con.set_train_times(500)
+    con.set_nbatches(100)
+    con.set_alpha(0.001)
+    con.set_margin(1.0)
+    con.set_bern(0)
+    con.set_dimension(50)
+    con.set_ent_neg_rate(1)
+    con.set_rel_neg_rate(0)
+    con.set_opt_method("SGD")
+
+    # Models will be exported via tf.Saver() automatically.
+    con.set_export_files(target_folder+"/model.vec.tf", 0)
+    # Model parameters will be exported to json files automatically.
+    con.set_out_files(target_folder + "/embedding.vec.json")
+    # Initialize experimental settings.
+    con.init()
+    # Set the knowledge embedding model
+    con.set_model(OpenKE.models.TransE)
+    # Train the model.
+    con.run()
+
+    # we need to convert the embedding to txt
+    with open(target_folder + "/embedding.vec.json", "r") as f:
+        dic = json.load(f)
+
+    ent_embs, rel_embs = dic['ent_embeddings'], dic['rel_embeddings']
+
+    with open(target_folder+'/entity_vector.json', 'w') as f:
+        json.dump(ent_embs, f)
+
+    with open(target_folder+'/relation_vector.json', 'w') as f:
+        json.dump(rel_embs, f)
+
+
+def prepare_kg(source_resource, target_folder):
+    current_kg = dict()
+    current_kg['csk_triples'] = list()
+    current_kg['csk_entities'] = list()
+    current_kg['csk_relations'] = list()
+    all_vocab = list()
+
+    with open('kgs/conceptnet.txt', 'r', encoding='utf-8') as f:
+        for line in f:
+            tmp_words = line[:-1].split('\t')
+            tmp_head = tmp_words[1]
+            tmp_relation = tmp_words[0]
+            tmp_tail = tmp_words[2]
+            tmp_triplet = tmp_head+','+tmp_relation+','+tmp_tail
+            current_kg['csk_triples'].append(tmp_triplet)
+            current_kg['csk_entities'].append(tmp_head)
+            current_kg['csk_entities'].append(tmp_tail)
+            current_kg['csk_relations'].append(tmp_relation)
+            for w in tmp_head.split(' '):
+                all_vocab.append(w)
+            for w in tmp_tail.split(' '):
+                all_vocab.append(w)
+
+    with open(source_resource, 'r', encoding='utf-8') as f:
+        for line in f:
+            tmp_words = line[:-1].split('\t')
+            tmp_head = tmp_words[1]
+            tmp_relation = tmp_words[0]
+            tmp_tail = tmp_words[2]
+            tmp_triplet = tmp_head+','+tmp_relation+','+tmp_tail
+            current_kg['csk_triples'].append(tmp_triplet)
+            current_kg['csk_entities'].append(tmp_head)
+            current_kg['csk_entities'].append(tmp_tail)
+            current_kg['csk_relations'].append(tmp_relation)
+            for w in tmp_head.split(' '):
+                all_vocab.append(w)
+            for w in tmp_tail.split(' '):
+                all_vocab.append(w)
+
+    all_vocab = list(set(all_vocab))
+    current_kg['csk_triples'] = list(set(current_kg['csk_triples']))
+    current_kg['csk_entities'] = list(set(current_kg['csk_entities']))
+    current_kg['csk_relations'] = list(set(current_kg['csk_relations']))
+    current_kg['vocab_dict'] = dict()
+    current_kg['dict_csk'] = dict()
+    current_kg['dict_csk_triples'] = dict()
+    current_kg['dict_csk_relations'] = dict()
+
+    for w in all_vocab:
+        current_kg['vocab_dict'][w] = len(current_kg['vocab_dict'])
+
+    for tmp_concept in current_kg['csk_entities']:
+        current_kg['dict_csk'][tmp_concept] = len(current_kg['dict_csk'])
+
+    for tmp_relation in current_kg['csk_relations']:
+        current_kg['dict_csk_relations'][tmp_relation] = len(current_kg['dict_csk_relations'])
+
+    for tmp_triplet in current_kg['csk_triples']:
+        current_kg['dict_csk_triples'][tmp_triplet] = len(current_kg['dict_csk_triples'])
+
+    with open(target_folder+'/current_kg.json', 'w') as f:
+        json.dump(current_kg, f)
+    print('Finish preparing the kg statistics')
+    print('Start to train the TransE')
+
+    with open(target_folder+'/train2id.txt', 'w') as f:
+        f.write(len(current_kg['csk_triples']))
+        f.write('\n')
+        for tmp_triplet in current_kg['csk_triples']:
+            head_id = current_kg['dict_csk'][tmp_triplet.split(',')[0]]
+            tail_id = current_kg['dict_csk'][tmp_triplet.split(',')[2]]
+            relation_id = current_kg['dict_csk'][tmp_triplet.split(',')[2]]
+            f.write(head_id)
+            f.write('\t')
+            f.write(tail_id)
+            f.write('\t')
+            f.write(relation_id)
+            f.write('\n')
+    with open(target_folder+'/entity2id.txt', 'w') as f:
+        f.write(len(current_kg['csk_entities']))
+        f.write('\n')
+        for tmp_entity in current_kg['csk_entities']:
+            f.write(tmp_entity)
+            f.write('\t')
+            f.write(current_kg['dict_csk'][tmp_entity])
+            f.write('\n')
+
+    with open(target_folder+'/relation2id.txt', 'w') as f:
+        f.write(len(current_kg['csk_relations']))
+        f.write('\n')
+        for tmp_relation in current_kg['csk_relations']:
+            f.write(tmp_relation)
+            f.write('\t')
+            f.write(current_kg['dict_csk_relations'][tmp_relation])
+            f.write('\n')
+    train_TransE(target_folder)
 
 def convert_data(input_file_name, output_file_name, tmp_kg):
     print('input:', input_file_name, 'output:', output_file_name)
@@ -67,45 +219,38 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
             f.write('\n')
             # break
 
+def process_data(tmp_location):
+    with open(tmp_location+'/current_kg.json', 'w') as f:
+        current_kg = json.load(f)
 
-current_kg = dict()
+    current_kg['postEntityToCSKTripleIndex'] = {}
+    current_kg['postEntityToOtherCSKTripleEntities'] = {}
+    index = 0
+    for triple in current_kg['csk_triples']:
+        firstEntity = triple.split(',')[0]
+        secondEntity = triple.split(',')[2].strip()
+        if(not firstEntity in current_kg['postEntityToCSKTripleIndex']):
+            current_kg['postEntityToCSKTripleIndex'][firstEntity] = []
+        current_kg['postEntityToCSKTripleIndex'][firstEntity].append(index)
+        if(not secondEntity in current_kg['postEntityToCSKTripleIndex']):
+            current_kg['postEntityToCSKTripleIndex'][secondEntity] = []
+        current_kg['postEntityToCSKTripleIndex'][secondEntity].append(index)
 
-current_kg['postEntityToCSKTripleIndex'] = {}
-current_kg['postEntityToOtherCSKTripleEntities'] = {}
-current_kg['dict_csk_triples'] = dict()
-current_kg['csk_triples'] = list()
-current_kg['csk_entities'] = list()
-current_kg['vocab_dict'] = dict()
-current_kg['dict_csk'] = dict()
-index = 0
-for triple in current_kg['csk_triples']:
-    firstEntity = triple.split(',')[0]
-    secondEntity = triple.split(',')[2].strip()
-    if(not firstEntity in current_kg['postEntityToCSKTripleIndex']):
-        current_kg['postEntityToCSKTripleIndex'][firstEntity] = []
-    current_kg['postEntityToCSKTripleIndex'][firstEntity].append(index)
-    if(not secondEntity in current_kg['postEntityToCSKTripleIndex']):
-        current_kg['postEntityToCSKTripleIndex'][secondEntity] = []
-    current_kg['postEntityToCSKTripleIndex'][secondEntity].append(index)
+        if (not firstEntity in current_kg['postEntityToOtherCSKTripleEntities']):
+            current_kg['postEntityToOtherCSKTripleEntities'][firstEntity] = []
+        current_kg['postEntityToOtherCSKTripleEntities'][firstEntity].append(current_kg['dict_csk_entities'][secondEntity])
+        if (not secondEntity in current_kg['postEntityToOtherCSKTripleEntities']):
+            current_kg['postEntityToOtherCSKTripleEntities'][secondEntity] = []
+        current_kg['postEntityToOtherCSKTripleEntities'][secondEntity].append(current_kg['dict_csk_entities'][firstEntity])
+        index += 1
 
-    if (not firstEntity in current_kg['postEntityToOtherCSKTripleEntities']):
-        current_kg['postEntityToOtherCSKTripleEntities'][firstEntity] = []
-    current_kg['postEntityToOtherCSKTripleEntities'][firstEntity].append(current_kg['dict_csk_entities'][secondEntity])
-    if (not secondEntity in current_kg['postEntityToOtherCSKTripleEntities']):
-        current_kg['postEntityToOtherCSKTripleEntities'][secondEntity] = []
-    current_kg['postEntityToOtherCSKTripleEntities'][secondEntity].append(current_kg['dict_csk_entities'][firstEntity])
-    index += 1
+    current_kg['indexToCSKTriple'] = {v: k for k,v in current_kg['dict_csk_triples'].items()}
 
-current_kg['indexToCSKTriple'] = {v: k for k,v in current_kg['dict_csk_triples'].items()}
+    convert_data('dialog_dataset/formatted_train.json', 'data/none/trainset.txt', current_kg)
+    convert_data('dialog_dataset/formatted_dev.json', 'data/none/validset.txt', current_kg)
+    convert_data('dialog_dataset/formatted_test.json', 'data/none/testset.txt', current_kg)
 
 
-# print(str(test))
-
-convert_data('dialog_dataset/formatted_train.json', 'data/none/trainset.txt', current_kg)
-convert_data('dialog_dataset/formatted_dev.json', 'data/none/validset.txt', current_kg)
-convert_data('dialog_dataset/formatted_test.json', 'data/none/testset.txt', current_kg)
-with open('data/none/resource.txt', 'w') as f:
-    f.write(json.dumps(current_kg))
-    f.write('\n')
-
+prepare_kg('kgs/conceptnet.txt', 'data/conceptnet')
+process_data('data/conceptnet')
 
