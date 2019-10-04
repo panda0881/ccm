@@ -240,7 +240,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
             # break
 
 def process_data(tmp_location):
-    with open(tmp_location+'/current_kg.json', 'w') as f:
+    with open(tmp_location+'/current_kg.json', 'r') as f:
         current_kg = json.load(f)
 
     current_kg['postEntityToCSKTripleIndex'] = {}
