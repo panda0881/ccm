@@ -56,7 +56,7 @@ def train_TransE(target_folder):
     #     dic = json.load(f)
     #
     print('dic:')
-    # print(dic)
+    print(embeddings)
     for key in embeddings:
         print(key)
     #
