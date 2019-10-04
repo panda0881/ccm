@@ -144,6 +144,16 @@ def prepare_kg(source_resource, target_folder):
     with open(target_folder+'/current_kg.json', 'w', encoding='utf-8') as f:
         json.dump(current_kg, f)
 
+    with open(target_folder+'/entity.txt', 'w') as f:
+        for tmp_entity in current_kg['csk_entities']:
+            f. write(tmp_entity)
+            f.write('\n')
+
+    with open(target_folder+'/relation.txt', 'w') as f:
+        for tmp_relation in current_kg['csk_relations']:
+            f. write(tmp_relation)
+            f.write('\n')
+
     with open(target_folder+'/train2id.txt', 'w', encoding='utf-8') as f:
         print('Number of triplets:', len(current_kg['csk_triples']))
         f.write(str(len(current_kg['csk_triples'])))
