@@ -123,14 +123,17 @@ def prepare_kg(source_resource, target_folder):
     current_kg['csk_relations'] = list(set(current_kg['csk_relations']))
     current_kg['vocab_dict'] = dict()
     current_kg['dict_csk'] = dict()
-    current_kg['dict_csk_triples'] = dict()
+    current_kg['dict_csk_entities'] = dict()
     current_kg['dict_csk_relations'] = dict()
+    current_kg['dict_csk_triples'] = dict()
+
 
     for w in all_vocab:
         current_kg['vocab_dict'][w] = str(len(current_kg['vocab_dict']))
 
     for tmp_concept in current_kg['csk_entities']:
         current_kg['dict_csk'][tmp_concept] = str(len(current_kg['dict_csk']))
+        current_kg['dict_csk_entities'][tmp_concept] = str(len(current_kg['dict_csk_entities']))
 
     for tmp_relation in current_kg['csk_relations']:
         current_kg['dict_csk_relations'][tmp_relation] = str(len(current_kg['dict_csk_relations']))
