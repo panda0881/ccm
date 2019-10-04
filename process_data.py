@@ -125,10 +125,9 @@ def prepare_kg(source_resource, target_folder):
 
     with open(target_folder+'/current_kg.json', 'w') as f:
         json.dump(current_kg, f)
-    print('Finish preparing the kg statistics')
-    print('Start to train the TransE')
 
     with open(target_folder+'/train2id.txt', 'w') as f:
+        print('Number of triplets:', len(current_kg['csk_triples']))
         f.write(str(len(current_kg['csk_triples'])))
         f.write('\n')
         for tmp_triplet in current_kg['csk_triples']:
@@ -142,6 +141,7 @@ def prepare_kg(source_resource, target_folder):
             f.write(relation_id)
             f.write('\n')
     with open(target_folder+'/entity2id.txt', 'w') as f:
+        print('Number of entity:', len(current_kg['csk_entities']))
         f.write(str(len(current_kg['csk_entities'])))
         f.write('\n')
         for tmp_entity in current_kg['csk_entities']:
@@ -151,6 +151,7 @@ def prepare_kg(source_resource, target_folder):
             f.write('\n')
 
     with open(target_folder+'/relation2id.txt', 'w') as f:
+        print('Number of relation:', len(current_kg['csk_relations']))
         f.write(str(len(current_kg['csk_relations'])))
         f.write('\n')
         for tmp_relation in current_kg['csk_relations']:
@@ -158,6 +159,8 @@ def prepare_kg(source_resource, target_folder):
             f.write('\t')
             f.write(current_kg['dict_csk_relations'][tmp_relation])
             f.write('\n')
+    print('Finish preparing the kg')
+    print('Start to train the TransE')
     train_TransE(target_folder)
 
 def convert_data(input_file_name, output_file_name, tmp_kg):
