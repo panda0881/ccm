@@ -140,16 +140,7 @@ def prepare_kg(source_resource, target_folder):
         f.write(str(len(current_kg['csk_triples'])))
         f.write('\n')
         for tmp_triplet in current_kg['csk_triples']:
-            # print(tmp_triplet)
-            # if tmp_triplet.split(',')[0] in current_kg['csk_entities']:
-            #     print('lalal')
-            # else:
-            #     print('wuwuw')
             head_id = current_kg['dict_csk'][tmp_triplet.split('$$')[0]]
-            # if tmp_triplet.split(',')[2] in current_kg['csk_entities']:
-            #     print('lalal')
-            # else:
-            #     print('wuwuw')
             tail_id = current_kg['dict_csk'][tmp_triplet.split('$$')[2]]
             relation_id = current_kg['dict_csk_relations'][tmp_triplet.split('$$')[1]]
             f.write(head_id)

@@ -27,8 +27,7 @@ class TransE(Model):
 												  initializer=tf.constant_initializer(self.initial_rel_embeds),
 												  trainable=True)
 
-			self.parameter_lists = {"ent_embeddings":self.ent_embeddings, \
-									"rel_embeddings":self.rel_embeddings}
+			self.parameter_lists = {"ent_embeddings":self.ent_embeddings, "rel_embeddings":self.rel_embeddings}
 
 		else:
 			self.ent_embeddings = tf.get_variable(name="ent_embeddings", shape=[config.entTotal, config.hidden_size],
