@@ -123,10 +123,10 @@ def prepare_kg(source_resource, target_folder):
     for tmp_triplet in current_kg['csk_triples']:
         current_kg['dict_csk_triples'][tmp_triplet] = str(len(current_kg['dict_csk_triples']))
 
-    with open(target_folder+'/current_kg.json', 'w') as f:
+    with open(target_folder+'/current_kg.json', 'w', encoding='utf-8') as f:
         json.dump(current_kg, f)
 
-    with open(target_folder+'/train2id.txt', 'w') as f:
+    with open(target_folder+'/train2id.txt', 'w', encoding='utf-8') as f:
         print('Number of triplets:', len(current_kg['csk_triples']))
         f.write(str(len(current_kg['csk_triples'])))
         f.write('\n')
@@ -149,7 +149,7 @@ def prepare_kg(source_resource, target_folder):
             f.write('\t')
             f.write(relation_id)
             f.write('\n')
-    with open(target_folder+'/entity2id.txt', 'w') as f:
+    with open(target_folder+'/entity2id.txt', 'w', encoding='utf-8') as f:
         print('Number of entity:', len(current_kg['csk_entities']))
         f.write(str(len(current_kg['csk_entities'])))
         f.write('\n')
@@ -159,7 +159,7 @@ def prepare_kg(source_resource, target_folder):
             f.write(current_kg['dict_csk'][tmp_entity])
             f.write('\n')
 
-    with open(target_folder+'/relation2id.txt', 'w') as f:
+    with open(target_folder+'/relation2id.txt', 'w', encoding='utf-8') as f:
         print('Number of relation:', len(current_kg['csk_relations']))
         f.write(str(len(current_kg['csk_relations'])))
         f.write('\n')
@@ -226,7 +226,7 @@ def convert_data(input_file_name, output_file_name, tmp_kg):
         new_example['post'] = tmp_example['post'].split(' ')
         new_example['response'] = tmp_example['response'].split(' ')
         all_examples_after_match.append(new_example)
-    with open(output_file_name, 'w') as f:
+    with open(output_file_name, 'w', encoding='utf-8') as f:
         for tmp_example in tqdm(all_examples_after_match):
             # print(tmp_example)
             f.write(json.dumps(tmp_example))
