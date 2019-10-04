@@ -269,9 +269,9 @@ def process_data(tmp_location):
 
     current_kg['indexToCSKTriple'] = {v: k for k,v in current_kg['dict_csk_triples'].items()}
 
-    convert_data('dialog_dataset/formatted_train.json', 'data/none/trainset.txt', current_kg)
-    convert_data('dialog_dataset/formatted_dev.json', 'data/none/validset.txt', current_kg)
-    convert_data('dialog_dataset/formatted_test.json', 'data/none/testset.txt', current_kg)
+    convert_data('dialog_dataset/formatted_train.json', tmp_location + '/trainset.txt', current_kg)
+    convert_data('dialog_dataset/formatted_dev.json', tmp_location + '/validset.txt', current_kg)
+    convert_data('dialog_dataset/formatted_test.json', tmp_location + '/testset.txt', current_kg)
 
 
 prepare_kg('kgs/conceptnet.txt', 'data/conceptnet')
