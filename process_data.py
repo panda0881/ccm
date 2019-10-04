@@ -133,7 +133,7 @@ def prepare_kg(source_resource, target_folder):
         for tmp_triplet in current_kg['csk_triples']:
             head_id = current_kg['dict_csk'][tmp_triplet.split(',')[0]]
             tail_id = current_kg['dict_csk'][tmp_triplet.split(',')[2]]
-            relation_id = current_kg['dict_csk'][tmp_triplet.split(',')[2]]
+            relation_id = current_kg['dict_csk_relations'][tmp_triplet.split(',')[1]]
             f.write(head_id)
             f.write('\t')
             f.write(tail_id)
