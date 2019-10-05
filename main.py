@@ -357,7 +357,7 @@ def new_test(sess, saver, data_dev, setnum=5000):
         gold_answer = data_dev[i]['response']
         tmp_bleu_score = sentence_bleu([gold_answer], tmp_response)
         overall_bleu_score += tmp_bleu_score
-    print('Average bleu score')
+    print('Average bleu score:', overall_bleu_score/len(results))
 
     match_entity_sum = [m / setnum for m in match_entity_sum] + [sum(match_entity_sum) / len(data_dev)]
     losses = [np.sum(loss[x:x + setnum]) / float(setnum) for x in range(0, setnum * 4, setnum)] + [
