@@ -288,6 +288,7 @@ def process_data(tmp_location):
 
 os.environ['CUDA_VISIBLE_DEVICE'] = '3'
 
+
 prepare_kg('kgs/conceptnet.txt', 'data/conceptnet')
 process_data('data/conceptnet')
 prepare_kg('kgs/COMET_original_1.txt', 'data/COMET_original_1')

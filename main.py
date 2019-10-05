@@ -9,6 +9,8 @@ import time
 import random
 random.seed(time.time())
 from model import Model, _START_VOCAB
+import argparse
+from tqdm import tqdm
 
 tf.app.flags.DEFINE_boolean("is_train", True, "Set to False to inference.")
 tf.app.flags.DEFINE_integer("symbols", 30000, "vocabulary size.")
@@ -16,10 +18,10 @@ tf.app.flags.DEFINE_integer("num_entities", 21471, "entitiy vocabulary size.")
 tf.app.flags.DEFINE_integer("num_relations", 44, "relation size.")
 tf.app.flags.DEFINE_integer("embed_units", 300, "Size of word embedding.")
 tf.app.flags.DEFINE_integer("trans_units", 50, "Size of trans embedding.")
-tf.app.flags.DEFINE_integer("units", 64, "Size of each model layer.")
+tf.app.flags.DEFINE_integer("units", 32, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("layers", 2, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("batch_size", 10, "Batch size to use during training.")
-tf.app.flags.DEFINE_string("data_dir", "./data/conceptnet", "Data directory")
+tf.app.flags.DEFINE_string("data_dir", "./data/none", "Data directory")
 tf.app.flags.DEFINE_string("train_dir", "./train", "Training directory.")
 tf.app.flags.DEFINE_integer("per_checkpoint", 1000, "How many steps to do per checkpoint.")
 tf.app.flags.DEFINE_integer("inference_version", 0, "The version for inferencing.")
@@ -266,8 +268,9 @@ def get_steps(train_dir):
     return steps
 
 def test(sess, saver, data_dev, setnum=5000):
-    with open('%s/stopwords' % FLAGS.data_dir) as f:
-        stopwords = json.loads(f.readline())
+    # with open('%s/stopwords' % 'data' + args.data_dir) as f:
+    #     stopwords = json.loads(f.readline())
+    stopwords = list()
     steps = get_steps(FLAGS.train_dir)
     low_step = 00000
     high_step = 800000
@@ -326,10 +329,16 @@ def test(sess, saver, data_dev, setnum=5000):
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
+parser = argparse.ArgumentParser()
+parser.add_argument('--gpu', type=str, default='0', help='GPU to use')
+parser.add_argument('--data_dir', type=str, default='none', help='which dataset to train')
+args = parser.parse_args()
+
+os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 with tf.Session(config=config) as sess:
     if FLAGS.is_train:
-        raw_vocab, data_train, data_dev, data_test = prepare_data(FLAGS.data_dir)
-        vocab, embed, entity_vocab, entity_embed, relation_vocab, relation_embed, entity_relation_embed = build_vocab(FLAGS.data_dir, raw_vocab)
+        raw_vocab, data_train, data_dev, data_test = prepare_data('data' + args.data_dir)
+        vocab, embed, entity_vocab, entity_embed, relation_vocab, relation_embed, entity_relation_embed = build_vocab('data' + args.data_dir, raw_vocab)
         FLAGS.num_entities = len(entity_vocab)
         print(FLAGS.__flags)
         model = Model(
@@ -368,44 +377,43 @@ with tf.Session(config=config) as sess:
         previous_losses = [1e18]*3
         train_len = len(data_train)
         number_of_iteration = 20
+
         for i in range(number_of_iteration):
             print('current iteration:', i, '/', number_of_iteration)
             st, ed = 0, FLAGS.batch_size * FLAGS.per_checkpoint
             random.shuffle(data_train)
-            while st < train_len:
-                start_time = time.time()
-                show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
-                for batch in range(st, ed, FLAGS.batch_size):
-                    loss_step += train(model, sess, data_train[batch:batch+FLAGS.batch_size]) / (ed - st)
-
-
-                    print("global step %d learning rate %.4f step-time %.2f loss %f perplexity %s"
-                        % (model.global_step.eval(), model.lr, 
-                            (time.time() - start_time) / ((ed - st) / FLAGS.batch_size), loss_step, show(np.exp(loss_step))))
-                model.saver.save(sess, '%s/checkpoint' % FLAGS.train_dir, 
-                        global_step=model.global_step)
-                summary = tf.Summary()
-                summary.value.add(tag='decoder_loss/train', simple_value=loss_step)
-                summary.value.add(tag='perplexity/train', simple_value=np.exp(loss_step))
-                summary_writer.add_summary(summary, model.global_step.eval())
-                summary_model = generate_summary(model, sess, data_train)
-                summary_writer.add_summary(summary_model, model.global_step.eval())
-                evaluate(model, sess, data_dev, summary_writer)
-                previous_losses = previous_losses[1:]+[np.sum(loss_step)]
-                loss_step, time_step = np.zeros((1, )), .0
-                st, ed = ed, min(train_len, ed + FLAGS.batch_size * FLAGS.per_checkpoint)
+            train_data_by_batch = list()
+            for j in range(int(train_len/FLAGS.batch_size)+1):
+                train_data_by_batch.append(data_train[j*FLAGS.batch_size:(j+1)*FLAGS.batch_size])
+            for tmp_train_data in tqdm(train_data_by_batch):
+                loss_step += train(model, sess, tmp_train_data)
+            loss_step /= train_len
+            show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
+            print("global step %d learning rate %.4f loss %f perplexity %s"
+                  % (model.global_step.eval(), model.lr, loss_step, show(np.exp(loss_step))))
+            evaluate(model, sess, data_dev, summary_writer)
             model.saver_epoch.save(sess, '%s/epoch/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
-            test(sess, model.saver, data_test, setnum=5000)
-    else:
-        model = Model(
-                FLAGS.symbols, 
-                FLAGS.embed_units,
-                FLAGS.units, 
-                FLAGS.layers,
-                embed=None,
-                num_entities=FLAGS.num_entities+FLAGS.num_relations,
-                num_trans_units=FLAGS.trans_units)
 
+            # while st < train_len:
+            #     start_time = time.time()
+            #
+            #     for batch in range(st, ed, FLAGS.batch_size):
+            #         loss_step += train(model, sess, data_train[batch:batch+FLAGS.batch_size]) / (ed - st)
+            #
+            #
+            #
+            #     model.saver.save(sess, '%s/checkpoint' % FLAGS.train_dir,
+            #             global_step=model.global_step)
+            #     summary = tf.Summary()
+            #     summary.value.add(tag='decoder_loss/train', simple_value=loss_step)
+            #     summary.value.add(tag='perplexity/train', simple_value=np.exp(loss_step))
+            #     summary_writer.add_summary(summary, model.global_step.eval())
+            #     summary_model = generate_summary(model, sess, data_train)
+            #     summary_writer.add_summary(summary_model, model.global_step.eval())
+            #     evaluate(model, sess, data_dev, summary_writer)
+            #     previous_losses = previous_losses[1:]+[np.sum(loss_step)]
+            #     loss_step, time_step = np.zeros((1, )), .0
+            #     st, ed = ed, min(train_len, ed + FLAGS.batch_size * FLAGS.per_checkpoint)
         if FLAGS.inference_version == 0:
             model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
         else:
@@ -413,8 +421,26 @@ with tf.Session(config=config) as sess:
         print('restore from %s' % model_path)
         model.saver.restore(sess, model_path)
         saver = model.saver
-
-        raw_vocab, data_train, data_dev, data_test = prepare_data(FLAGS.data_dir, is_train=False)
-
-        test(sess, saver, data_test, setnum=5000)
+        test(sess, model.saver, data_test, setnum=5000)
+    # else:
+    #     model = Model(
+    #             FLAGS.symbols,
+    #             FLAGS.embed_units,
+    #             FLAGS.units,
+    #             FLAGS.layers,
+    #             embed=None,
+    #             num_entities=FLAGS.num_entities+FLAGS.num_relations,
+    #             num_trans_units=FLAGS.trans_units)
+    #
+    #     if FLAGS.inference_version == 0:
+    #         model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
+    #     else:
+    #         model_path = '%s/checkpoint-%08d' % (FLAGS.train_dir, FLAGS.inference_version)
+    #     print('restore from %s' % model_path)
+    #     model.saver.restore(sess, model_path)
+    #     saver = model.saver
+    #
+    #     raw_vocab, data_train, data_dev, data_test = prepare_data('data' + args.data_dir, is_train=False)
+    #
+    #     test(sess, saver, data_test, setnum=5000)
 
