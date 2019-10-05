@@ -21,7 +21,7 @@ tf.app.flags.DEFINE_integer("num_relations", 21, "relation size.")
 tf.app.flags.DEFINE_integer("embed_units", 300, "Size of word embedding.")
 tf.app.flags.DEFINE_integer("trans_units", 50, "Size of trans embedding.")
 tf.app.flags.DEFINE_integer("units", 16, "Size of each model layer.")
-tf.app.flags.DEFINE_integer("layers", 1, "Number of layers in the model.")
+tf.app.flags.DEFINE_integer("layers", 2, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("batch_size", 4, "Batch size to use during training.")
 tf.app.flags.DEFINE_string("data_dir", "./data/none", "Data directory")
 tf.app.flags.DEFINE_string("train_dir", "./train", "Training directory.")
@@ -520,16 +520,16 @@ with tf.Session(config=config) as sess:
         loss_step, time_step = np.zeros((1,)), .0
         previous_losses = [1e18] * 3
         # data_train = data_train[:50]
-        data_train = data_test
+        # data_train = data_test
         data_train = data_train[:100]
         train_len = len(data_train)
-        number_of_iteration = 5
+        number_of_iteration = 50
 
-        print('Dev set:')
-        new_test(sess, model.saver, data_dev)
+        # print('Dev set:')
+        # new_test(sess, model.saver, data_dev)
         # evaluate(model, sess, data_dev, summary_writer)
-        print('Test set:')
-        new_test(sess, model.saver, data_test)
+        # print('Test set:')
+        # new_test(sess, model.saver, data_test)
         for i in range(number_of_iteration):
             print('Current data resource:', FLAGS.data_dir)
             print('current iteration:', i + 1, '/', number_of_iteration)
@@ -552,7 +552,7 @@ with tf.Session(config=config) as sess:
             # new_test(sess, model.saver, data_dev)
             # evaluate(model, sess, data_dev, summary_writer)
             print('Test set:')
-            new_test(sess, model.saver, data_test)
+            new_test(sess, model.saver, data_train)
             # evaluate(model, sess, data_test, summary_writer)
             # model.saver_epoch.save(sess, '%s/epoch/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
 
