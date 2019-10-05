@@ -326,6 +326,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     overall_bleu_2_score = 0
     overall_bleu_3_score = 0
     overall_bleu_4_score = 0
+    overall_bleu_score = 0
+
     # print('start to calculate the bleu score')
     for i, tmp_response in enumerate(results):
         gold_answer = data_dev[i]['response']
@@ -333,10 +335,11 @@ def new_test(sess, saver, data_dev, setnum=5000):
         overall_bleu_2_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 1, 0, 0))
         overall_bleu_3_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 0, 1, 0))
         overall_bleu_4_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 0, 0, 1))
+        overall_bleu_score += sentence_bleu([gold_answer], tmp_response, weights=(0.25, 0.25, 0.25, 0.25))
         # overall_bleu_score += tmp_bleu_score
     print('Average bleu score:', 'bleu1:', overall_bleu_1_score / len(results), 'bleu2:',
           overall_bleu_2_score / len(results), 'bleu3:', overall_bleu_3_score / len(results), 'bleu4:',
-          overall_bleu_4_score / len(results))
+          overall_bleu_4_score / len(results), 'average:', overall_bleu_score/len(results))
 
     # match_entity_sum = [m / setnum for m in match_entity_sum] + [sum(match_entity_sum) / len(data_dev)]
     losses = [np.sum(loss[x:x + setnum]) / float(setnum) for x in range(0, setnum * 4, setnum)] + [
