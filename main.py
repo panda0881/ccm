@@ -520,6 +520,7 @@ with tf.Session(config=config) as sess:
         loss_step, time_step = np.zeros((1,)), .0
         previous_losses = [1e18] * 3
         # data_train = data_train[:50]
+        data_train = data_test
         train_len = len(data_train)
         number_of_iteration = 5
 
