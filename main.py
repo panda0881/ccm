@@ -521,6 +521,7 @@ with tf.Session(config=config) as sess:
         previous_losses = [1e18] * 3
         # data_train = data_train[:50]
         data_train = data_test
+        data_train = data_train[:100]
         train_len = len(data_train)
         number_of_iteration = 5
 
