@@ -384,9 +384,14 @@ def test(sess, saver, data_dev, setnum=5000):
         st, ed = 0, FLAGS.batch_size
         results = []
         loss = []
-        while st < len(data_dev):
-            selected_data = data_dev[st:ed]
-            batched_data = gen_batched_data(selected_data)
+
+        evaluation_data_by_batch = list()
+        for j in range(int(train_len / FLAGS.batch_size) + 1):
+            if len(data_dev[j * FLAGS.batch_size:(j + 1) * FLAGS.batch_size]) > 0:
+                evaluation_data_by_batch.append(data_dev[j * FLAGS.batch_size:(j + 1) * FLAGS.batch_size])
+
+        for tmp_data in tqdm(evaluation_data_by_batch):
+            batched_data = gen_batched_data(tmp_data)
             print(batched_data)
             responses, ppx_loss = sess.run(['decoder_1/generation:0', 'decoder/ppx_loss:0'],
                                            {'enc_inps:0': batched_data['posts'],
@@ -408,7 +413,6 @@ def test(sess, saver, data_dev, setnum=5000):
                     else:
                         break
                 results.append(result)
-            st, ed = ed, ed + FLAGS.batch_size
         match_entity_sum = [.0] * 4
         cnt = 0
         for post, response, result, match_triples, triples, entities in zip([data['post'] for data in data_dev],
