@@ -328,8 +328,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     overall_bleu_4_score = 0
     overall_bleu_score = 0
 
-    # print('start to calculate the bleu score')
-    for i, tmp_response in enumerate(results):
+    print('start to calculate the bleu score')
+    for i, tmp_response in tqdm(enumerate(results)):
         gold_answer = data_dev[i]['response']
         # print(gold_answer)
         # print(tmp_response)
