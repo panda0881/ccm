@@ -367,7 +367,8 @@ def test(sess, saver, data_dev, setnum=5000):
     low_step = 00000
     high_step = 800000
     for step in [step for step in steps if step > low_step and step < high_step]:
-        model_path = '%s/checkpoint.tmp' % FLAGS.train_dir
+        # model_path = '%s/checkpoint.tmp' % FLAGS.train_dir
+        model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
         print('restore from %s' % model_path)
         try:
             saver.restore(sess, model_path)
