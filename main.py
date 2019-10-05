@@ -317,7 +317,7 @@ def new_test(sess, saver, data_dev, setnum=5000):
             result = []
             for token in response:
                 if token != '_EOS':
-                    result.append(token)
+                    result.append(token.decode("utf-8"))
                 else:
                     break
             results.append(result)
