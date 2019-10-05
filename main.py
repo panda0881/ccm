@@ -398,8 +398,11 @@ with tf.Session(config=config) as sess:
             show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
             print("global step %d learning rate %.4f loss %f perplexity %s"
                   % (model.global_step.eval(), model.lr, loss_step, show(np.exp(loss_step))))
+            print('Dev set:')
             evaluate(model, sess, data_dev, summary_writer)
-            model.saver_epoch.save(sess, '%s/epoch/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
+            print('Test set:')
+            evaluate(model, sess, data_test, summary_writer)
+            # model.saver_epoch.save(sess, '%s/epoch/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
 
             # while st < train_len:
             #     start_time = time.time()
@@ -421,14 +424,14 @@ with tf.Session(config=config) as sess:
             #     previous_losses = previous_losses[1:]+[np.sum(loss_step)]
             #     loss_step, time_step = np.zeros((1, )), .0
             #     st, ed = ed, min(train_len, ed + FLAGS.batch_size * FLAGS.per_checkpoint)
-        if FLAGS.inference_version == 0:
-            model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
-        else:
-            model_path = '%s/checkpoint-%08d' % (FLAGS.train_dir, FLAGS.inference_version)
-        print('restore from %s' % model_path)
-        model.saver.restore(sess, model_path)
-        saver = model.saver
-        test(sess, model.saver, data_test, setnum=5000)
+        # if FLAGS.inference_version == 0:
+        #     model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
+        # else:
+        #     model_path = '%s/checkpoint-%08d' % (FLAGS.train_dir, FLAGS.inference_version)
+        # print('restore from %s' % model_path)
+        # model.saver.restore(sess, model_path)
+        # saver = model.saver
+        # test(sess, model.saver, data_test, setnum=5000)
     # else:
     #     model = Model(
     #             FLAGS.symbols,
