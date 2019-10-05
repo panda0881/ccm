@@ -331,8 +331,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     # print('start to calculate the bleu score')
     for i, tmp_response in enumerate(results):
         gold_answer = data_dev[i]['response']
-        # print(gold_answer)
-        # print(tmp_response)
+        print(gold_answer)
+        print(tmp_response)
         # tmp_response = tmp_response + gold_answer
         overall_bleu_1_score += sentence_bleu([gold_answer], tmp_response, weights=(1, 0, 0, 0))
         overall_bleu_2_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 1, 0, 0))
