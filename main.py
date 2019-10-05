@@ -337,8 +337,8 @@ args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 with tf.Session(config=config) as sess:
     if FLAGS.is_train:
-        raw_vocab, data_train, data_dev, data_test = prepare_data('data' + args.data_dir)
-        vocab, embed, entity_vocab, entity_embed, relation_vocab, relation_embed, entity_relation_embed = build_vocab('data' + args.data_dir, raw_vocab)
+        raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + args.data_dir)
+        vocab, embed, entity_vocab, entity_embed, relation_vocab, relation_embed, entity_relation_embed = build_vocab('data/' + args.data_dir, raw_vocab)
         FLAGS.num_entities = len(entity_vocab)
         print(FLAGS.__flags)
         model = Model(
@@ -440,7 +440,7 @@ with tf.Session(config=config) as sess:
     #     model.saver.restore(sess, model_path)
     #     saver = model.saver
     #
-    #     raw_vocab, data_train, data_dev, data_test = prepare_data('data' + args.data_dir, is_train=False)
+    #     raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + args.data_dir, is_train=False)
     #
     #     test(sess, saver, data_test, setnum=5000)
 
