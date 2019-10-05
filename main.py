@@ -301,7 +301,7 @@ def new_test(sess, saver, data_dev, setnum=5000):
     while st < len(data_dev):
         selected_data = data_dev[st:ed]
         batched_data = gen_batched_data(selected_data)
-        print(batched_data)
+        # print(batched_data)
         responses, ppx_loss = sess.run(['decoder_1/generation:0', 'decoder/ppx_loss:0'],
                                        {'enc_inps:0': batched_data['posts'],
                                         'enc_lens:0': batched_data['posts_length'],
