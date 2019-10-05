@@ -296,8 +296,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     for j in range(int(train_len / FLAGS.batch_size) + 1):
         if len(data_dev[j * FLAGS.batch_size:(j + 1) * FLAGS.batch_size]) > 0:
             evaluation_data_by_batch.append(data_dev[j * FLAGS.batch_size:(j + 1) * FLAGS.batch_size])
-    # print('start to generate response')
-    for tmp_data in evaluation_data_by_batch:
+    print('start to generate response')
+    for tmp_data in tqdm(evaluation_data_by_batch):
         # selected_data = data_dev[st:ed]
         batched_data = gen_batched_data(tmp_data)
         # print(batched_data)
