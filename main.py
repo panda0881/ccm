@@ -388,7 +388,7 @@ with tf.Session(config=config) as sess:
             st, ed = 0, FLAGS.batch_size * FLAGS.per_checkpoint
             random.shuffle(data_train)
             train_data_by_batch = list()
-            for j in range(int(train_len/FLAGS.batch_size)+1):
+            for j in range(int(train_len/FLAGS.batch_size)):
                 train_data_by_batch.append(data_train[j*FLAGS.batch_size:(j+1)*FLAGS.batch_size])
             for tmp_train_data in tqdm(train_data_by_batch):
                 # print('number of example:', len(tmp_train_data))
