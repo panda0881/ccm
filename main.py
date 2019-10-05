@@ -214,6 +214,11 @@ def gen_batched_data(data):
             for ent in item['all_entities']:
                 entity.append([csk_entities[x] for x in ent] + ['_NONE'] * (triple_len - len(ent)))
             entities.append(entity + [['_NONE'] * triple_len] * (triple_num - len(entity)))
+        else:
+            entity = [['_NONE'] * triple_len]
+            for ent in item['all_entities']:
+                entity.append([csk_entities[x] for x in ent] + ['_NONE'] * (triple_len - len(ent)))
+            entities.append(entity + [['_NONE'] * triple_len] * (triple_num - len(entity)))
 
     batched_data = {'posts': np.array(posts),
                     'responses': np.array(responses),
