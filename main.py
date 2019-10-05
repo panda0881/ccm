@@ -9,7 +9,6 @@ import time
 import random
 from nltk.translate.bleu_score import sentence_bleu
 
-
 random.seed(time.time())
 from model import Model, _START_VOCAB
 import argparse
@@ -196,7 +195,7 @@ def gen_batched_data(data):
         post_triples.append([[x] for x in item['post_triples']] + [[0]] * (encoder_len - len(item['post_triples'])))
         response_triples.append(
             [NAF] + [NAF if x == -1 else csk_triples[x].split('$$') for x in item['response_triples']] + [NAF] * (
-                        decoder_len - 1 - len(item['response_triples'])))
+                    decoder_len - 1 - len(item['response_triples'])))
         match_index = []
         for idx, x in enumerate(item['match_index']):
             _index = [-1] * triple_num
@@ -291,11 +290,6 @@ def get_steps(train_dir):
 
 
 def new_test(sess, saver, data_dev, setnum=5000):
-    # model_path = '%s/checkpoint.tmp' % FLAGS.train_dir
-    # model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
-    # print('restore from %s' % model_path)
-    # saver.restore(sess, model_path)
-    # st, ed = 0, FLAGS.batch_size
     results = []
     loss = []
     evaluation_data_by_batch = list()
@@ -327,37 +321,22 @@ def new_test(sess, saver, data_dev, setnum=5000):
                 else:
                     break
             results.append(result)
-        # st, ed = ed, ed + FLAGS.batch_size
-    # match_entity_sum = [.0] * 4
-    # cnt = 0
-    # for post, response, result, match_triples, triples, entities in zip([data['post'] for data in data_dev],
-    #                                                                     [data['response'] for data in data_dev],
-    #                                                                     results, [data['match_triples'] for data in
-    #                                                                               data_dev],
-    #                                                                     [data['all_triples'] for data in data_dev],
-    #                                                                     [data['all_entities'] for data in
-    #                                                                      data_dev]):
-    #     setidx = int(cnt / setnum)
-    #     result_matched_entities = []
-    #     triples = [csk_triples[tri] for triple in triples for tri in triple]
-    #     match_triples = [csk_triples[triple] for triple in match_triples]
-    #     entities = [csk_entities[x] for entity in entities for x in entity]
-    #     matches = [x for triple in match_triples for x in [triple.split('$$')[0], triple.split('$$')[2]] if
-    #                x in response]
-    #
-    #     for word in result:
-    #         if word in entities:
-    #             result_matched_entities.append(word)
-    #     match_entity_sum[setidx] += len(set(result_matched_entities))
-    #     cnt += 1
 
-    overall_bleu_score = 0
+    overall_bleu_1_score = 0
+    overall_bleu_2_score = 0
+    overall_bleu_3_score = 0
+    overall_bleu_4_score = 0
     # print('start to calculate the bleu score')
     for i, tmp_response in enumerate(results):
         gold_answer = data_dev[i]['response']
-        tmp_bleu_score = sentence_bleu([gold_answer], tmp_response)
-        overall_bleu_score += tmp_bleu_score
-    print('Average bleu score:', overall_bleu_score/len(results))
+        overall_bleu_1_score += sentence_bleu([gold_answer], tmp_response, weights=(1, 0, 0, 0))
+        overall_bleu_2_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 1, 0, 0))
+        overall_bleu_3_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 0, 1, 0))
+        overall_bleu_4_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 0, 0, 1))
+        # overall_bleu_score += tmp_bleu_score
+    print('Average bleu score:', 'bleu1:', overall_bleu_1_score / len(results), 'bleu2:',
+          overall_bleu_2_score / len(results), 'bleu3:', overall_bleu_3_score / len(results), 'bleu4:',
+          overall_bleu_4_score / len(results))
 
     # match_entity_sum = [m / setnum for m in match_entity_sum] + [sum(match_entity_sum) / len(data_dev)]
     losses = [np.sum(loss[x:x + setnum]) / float(setnum) for x in range(0, setnum * 4, setnum)] + [
@@ -367,7 +346,7 @@ def new_test(sess, saver, data_dev, setnum=5000):
     # def show(x):
     #     return ', '.join([str(v) for v in x])
 
-    print('perplexity:', sum(losses)/len(losses))
+    print('perplexity:', sum(losses) / len(losses))
 
     # print('perplexity: %s\n\tmatch_entity_rate: %s\n%s\n\n' % (show(losses), show(match_entity_sum), '=' * 50))
     # print(
@@ -460,11 +439,12 @@ def test(sess, saver, data_dev, setnum=5000):
             return ', '.join([str(v) for v in x])
 
         print('model: %d\n\tperplexity: %s\n\tmatch_entity_rate: %s\n%s\n\n' % (
-        step, show(losses), show(match_entity_sum), '=' * 50))
+            step, show(losses), show(match_entity_sum), '=' * 50))
         print(
             'model: %d\n\tperplexity: %s\n\tmatch_entity_rate: %s\n\n' % (step, show(losses), show(match_entity_sum)))
 
     # return results
+
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -516,15 +496,15 @@ with tf.Session(config=config) as sess:
                                           constant_op.constant(list(range(len(vocab))), dtype=tf.int64))
         sess.run(op_in)
         op_out = model.index2symbol.insert(constant_op.constant(
-                list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
+            list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
         sess.run(op_out)
         op_in = model.entity2index.insert(constant_op.constant(entity_vocab + relation_vocab),
-                                              constant_op.constant(list(range(len(entity_vocab) + len(relation_vocab))),
-                                                                   dtype=tf.int64))
+                                          constant_op.constant(list(range(len(entity_vocab) + len(relation_vocab))),
+                                                               dtype=tf.int64))
         sess.run(op_in)
         op_out = model.index2entity.insert(constant_op.constant(
-                list(range(len(entity_vocab) + len(relation_vocab))), dtype=tf.int64),
-                constant_op.constant(entity_vocab + relation_vocab))
+            list(range(len(entity_vocab) + len(relation_vocab))), dtype=tf.int64),
+            constant_op.constant(entity_vocab + relation_vocab))
         sess.run(op_out)
 
         if FLAGS.log_parameters:
