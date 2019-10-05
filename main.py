@@ -27,6 +27,7 @@ tf.app.flags.DEFINE_integer("per_checkpoint", 1000, "How many steps to do per ch
 tf.app.flags.DEFINE_integer("inference_version", 0, "The version for inferencing.")
 tf.app.flags.DEFINE_boolean("log_parameters", True, "Set to True to show the parameters")
 tf.app.flags.DEFINE_string("inference_path", "test", "Set filename of inference")
+tf.app.flags.DEFINE_string("gpu", "0", "which gpu to use")
 
 FLAGS = tf.app.flags.FLAGS
 if FLAGS.train_dir[-1] == '/': FLAGS.train_dir = FLAGS.train_dir[:-1]
@@ -268,7 +269,7 @@ def get_steps(train_dir):
     return steps
 
 def test(sess, saver, data_dev, setnum=5000):
-    # with open('%s/stopwords' % 'data' + args.data_dir) as f:
+    # with open('%s/stopwords' % 'data' + FLAGS.data_dir) as f:
     #     stopwords = json.loads(f.readline())
     stopwords = list()
     steps = get_steps(FLAGS.train_dir)
@@ -329,16 +330,16 @@ def test(sess, saver, data_dev, setnum=5000):
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
-parser = argparse.ArgumentParser()
-parser.add_argument('--gpu', type=str, default='0', help='GPU to use')
-parser.add_argument('--data_dir', type=str, default='none', help='which dataset to train')
-args = parser.parse_args()
+# parser = argparse.ArgumentParser()
+# parser.add_argument('--gpu', type=str, default='0', help='GPU to use')
+# parser.add_argument('--data_dir', type=str, default='none', help='which dataset to train')
+# args = parser.parse_args()
 
-os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
+# os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
 with tf.Session(config=config) as sess:
     if FLAGS.is_train:
-        raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + args.data_dir)
-        vocab, embed, entity_vocab, entity_embed, relation_vocab, relation_embed, entity_relation_embed = build_vocab('data/' + args.data_dir, raw_vocab)
+        raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + FLAGS.data_dir)
+        vocab, embed, entity_vocab, entity_embed, relation_vocab, relation_embed, entity_relation_embed = build_vocab('data/' + FLAGS.data_dir, raw_vocab)
         FLAGS.num_entities = len(entity_vocab)
         print(FLAGS.__flags)
         model = Model(
@@ -440,7 +441,7 @@ with tf.Session(config=config) as sess:
     #     model.saver.restore(sess, model_path)
     #     saver = model.saver
     #
-    #     raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + args.data_dir, is_train=False)
+    #     raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + FLAGS.data_dir, is_train=False)
     #
     #     test(sess, saver, data_test, setnum=5000)
 
