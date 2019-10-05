@@ -292,9 +292,9 @@ def get_steps(train_dir):
 
 def new_test(sess, saver, data_dev, setnum=5000):
     # model_path = '%s/checkpoint.tmp' % FLAGS.train_dir
-    model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
-    print('restore from %s' % model_path)
-    saver.restore(sess, model_path)
+    # model_path = tf.train.latest_checkpoint(FLAGS.train_dir)
+    # print('restore from %s' % model_path)
+    # saver.restore(sess, model_path)
     st, ed = 0, FLAGS.batch_size
     results = []
     loss = []
