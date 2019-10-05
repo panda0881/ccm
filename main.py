@@ -381,11 +381,11 @@ with tf.Session(config=config) as sess:
         previous_losses = [1e18]*3
         # data_train = data_train[:500]
         train_len = len(data_train)
-        number_of_iteration = 10
+        number_of_iteration = 5
 
         for i in range(number_of_iteration):
             print('Current data resource:', FLAGS.data_dir)
-            print('current iteration:', i, '/', number_of_iteration)
+            print('current iteration:', i+1, '/', number_of_iteration)
             st, ed = 0, FLAGS.batch_size * FLAGS.per_checkpoint
             random.shuffle(data_train)
             train_data_by_batch = list()
