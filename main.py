@@ -547,8 +547,8 @@ with tf.Session(config=config) as sess:
                   % (model.global_step.eval(), model.lr, loss_step, show(np.exp(loss_step))))
             model.saver.save(sess, '%s/checkpoint.tmp' % FLAGS.data_dir,
                              global_step=model.global_step)
-            print('Dev set:')
-            new_test(sess, model.saver, data_dev)
+            # print('Dev set:')
+            # new_test(sess, model.saver, data_dev)
             # evaluate(model, sess, data_dev, summary_writer)
             print('Test set:')
             new_test(sess, model.saver, data_test)
