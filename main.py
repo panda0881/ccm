@@ -379,7 +379,7 @@ with tf.Session(config=config) as sess:
         summary_writer = tf.summary.FileWriter('%s/log' % FLAGS.train_dir, sess.graph)
         loss_step, time_step = np.zeros((1, )), .0
         previous_losses = [1e18]*3
-        data_train = data_train[:500]
+        # data_train = data_train[:500]
         train_len = len(data_train)
         number_of_iteration = 10
 
