@@ -522,6 +522,11 @@ with tf.Session(config=config) as sess:
         train_len = len(data_train)
         number_of_iteration = 5
 
+        print('Dev set:')
+        new_test(sess, model.saver, data_dev)
+        # evaluate(model, sess, data_dev, summary_writer)
+        print('Test set:')
+        new_test(sess, model.saver, data_test)
         for i in range(number_of_iteration):
             print('Current data resource:', FLAGS.data_dir)
             print('current iteration:', i + 1, '/', number_of_iteration)
