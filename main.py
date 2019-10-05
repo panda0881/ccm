@@ -348,10 +348,10 @@ with tf.Session(config=config) as sess:
             print("Created model with fresh parameters.")
             tf.global_variables_initializer().run()
             op_in = model.symbol2index.insert(constant_op.constant(vocab),
-                constant_op.constant(list(range(FLAGS.symbols)), dtype=tf.int64))
+                constant_op.constant(list(range(len(vocab))), dtype=tf.int64))
             sess.run(op_in)
             op_out = model.index2symbol.insert(constant_op.constant(
-                list(range(FLAGS.symbols)), dtype=tf.int64), constant_op.constant(vocab))
+                list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
             sess.run(op_out)
             op_in = model.entity2index.insert(constant_op.constant(entity_vocab+relation_vocab),
                 constant_op.constant(list(range(len(entity_vocab)+len(relation_vocab))), dtype=tf.int64))
