@@ -99,6 +99,7 @@ def prepare_kg(source_resource, target_folder):
                 all_vocab.append(w)
             for w in tmp_tail.split(' '):
                 all_vocab.append(w)
+            break
 
     with open(source_resource, 'r', encoding='utf-8') as f:
         print('We are working on kg:', source_resource)
@@ -116,6 +117,7 @@ def prepare_kg(source_resource, target_folder):
                 all_vocab.append(w)
             for w in tmp_tail.split(' '):
                 all_vocab.append(w)
+            break
 
     all_vocab = list(set(all_vocab))
     current_kg['csk_triples'] = list(set(current_kg['csk_triples']))
@@ -284,6 +286,6 @@ def process_data(tmp_location):
     convert_data('dialog_dataset/formatted_test.json', tmp_location + '/testset.txt', current_kg)
 
 
-prepare_kg('kgs/conceptnet.txt', 'data/conceptnet')
-process_data('data/conceptnet')
+prepare_kg('kgs/conceptnet.txt', 'data/none')
+process_data('data/none')
 
