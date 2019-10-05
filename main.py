@@ -296,6 +296,7 @@ def new_test(sess, saver, data_dev, setnum=5000):
     while st < len(data_dev):
         selected_data = data_dev[st:ed]
         batched_data = gen_batched_data(selected_data)
+        print(batched_data)
         responses, ppx_loss = sess.run(['decoder_1/generation:0', 'decoder/ppx_loss:0'],
                                        {'enc_inps:0': batched_data['posts'],
                                         'enc_lens:0': batched_data['posts_length'],
@@ -499,7 +500,7 @@ with tf.Session(config=config) as sess:
         summary_writer = tf.summary.FileWriter('%s/log' % FLAGS.train_dir, sess.graph)
         loss_step, time_step = np.zeros((1,)), .0
         previous_losses = [1e18] * 3
-        data_train = data_train[:500]
+        data_train = data_train[:50]
         train_len = len(data_train)
         number_of_iteration = 5
 
