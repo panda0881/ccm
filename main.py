@@ -335,7 +335,7 @@ config.gpu_options.allow_growth = True
 # parser.add_argument('--data_dir', type=str, default='none', help='which dataset to train')
 # args = parser.parse_args()
 
-# os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu
+os.environ["CUDA_VISIBLE_DEVICES"]=FLAGS.gpu
 with tf.Session(config=config) as sess:
     if FLAGS.is_train:
         raw_vocab, data_train, data_dev, data_test = prepare_data('data/' + FLAGS.data_dir)
