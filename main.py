@@ -285,6 +285,80 @@ def get_steps(train_dir):
     return steps
 
 
+def new_test(sess, saver, data_dev, setnum=5000):
+    model_path = '%s/checkpoint.tmp' % FLAGS.train_dir
+    print('restore from %s' % model_path)
+    saver.restore(sess, model_path)
+    st, ed = 0, FLAGS.batch_size
+    results = []
+    loss = []
+    while st < len(data_dev):
+        selected_data = data_dev[st:ed]
+        batched_data = gen_batched_data(selected_data)
+        responses, ppx_loss = sess.run(['decoder_1/generation:0', 'decoder/ppx_loss:0'],
+                                       {'enc_inps:0': batched_data['posts'],
+                                        'enc_lens:0': batched_data['posts_length'],
+                                        'dec_inps:0': batched_data['responses'],
+                                        'dec_lens:0': batched_data['responses_length'],
+                                        'entities:0': batched_data['entities'],
+                                        'triples:0': batched_data['triples'],
+                                        'match_triples:0': batched_data['match_triples'],
+                                        'enc_triples:0': batched_data['posts_triple'],
+                                        'dec_triples:0': batched_data['responses_triple']})
+        loss += [x for x in ppx_loss]
+
+        for response in responses:
+            result = []
+            for token in response:
+                if token != '_EOS':
+                    result.append(token)
+                else:
+                    break
+            results.append(result)
+        st, ed = ed, ed + FLAGS.batch_size
+    match_entity_sum = [.0] * 4
+    cnt = 0
+    for post, response, result, match_triples, triples, entities in zip([data['post'] for data in data_dev],
+                                                                        [data['response'] for data in data_dev],
+                                                                        results, [data['match_triples'] for data in
+                                                                                  data_dev],
+                                                                        [data['all_triples'] for data in data_dev],
+                                                                        [data['all_entities'] for data in
+                                                                         data_dev]):
+        setidx = cnt / setnum
+        result_matched_entities = []
+        triples = [csk_triples[tri] for triple in triples for tri in triple]
+        match_triples = [csk_triples[triple] for triple in match_triples]
+        entities = [csk_entities[x] for entity in entities for x in entity]
+        matches = [x for triple in match_triples for x in [triple.split('$$')[0], triple.split('$$')[2]] if
+                   x in response]
+
+        for word in result:
+            if word in entities:
+                result_matched_entities.append(word)
+        match_entity_sum[setidx] += len(set(result_matched_entities))
+        cnt += 1
+
+    overall_bleu_score = 0
+    for i, tmp_response in enumerate(results):
+        gold_answer = data_dev[i]['response']
+        tmp_bleu_score = sentence_bleu([gold_answer], tmp_response)
+        overall_bleu_score += tmp_bleu_score
+    print('Average bleu score')
+
+    match_entity_sum = [m / setnum for m in match_entity_sum] + [sum(match_entity_sum) / len(data_dev)]
+    losses = [np.sum(loss[x:x + setnum]) / float(setnum) for x in range(0, setnum * 4, setnum)] + [
+        np.sum(loss) / float(setnum * 4)]
+    losses = [np.exp(x) for x in losses]
+
+    def show(x):
+        return ', '.join([str(v) for v in x])
+
+    print('perplexity: %s\n\tmatch_entity_rate: %s\n%s\n\n' % (show(losses), show(match_entity_sum), '=' * 50))
+    print(
+        'perplexity: %s\n\tmatch_entity_rate: %s\n\n' % (show(losses), show(match_entity_sum)))
+
+
 def test(sess, saver, data_dev, setnum=5000):
     # with open('%s/stopwords' % 'data' + FLAGS.data_dir) as f:
     #     stopwords = json.loads(f.readline())
@@ -445,10 +519,10 @@ with tf.Session(config=config) as sess:
             model.saver.save(sess, '%s/checkpoint.tmp' % FLAGS.train_dir,
                              global_step=model.global_step)
             print('Dev set:')
-            test(sess, model.saver, data_dev)
+            new_test(sess, model.saver, data_dev)
             # evaluate(model, sess, data_dev, summary_writer)
             print('Test set:')
-            test(sess, model.saver, data_test)
+            new_test(sess, model.saver, data_test)
             # evaluate(model, sess, data_test, summary_writer)
             # model.saver_epoch.save(sess, '%s/epoch/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
 
