@@ -331,8 +331,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     # print('start to calculate the bleu score')
     for i, tmp_response in enumerate(results):
         gold_answer = data_dev[i]['response']
-        print(gold_answer)
-        print(tmp_response)
+        # print(gold_answer)
+        # print(tmp_response)
         overall_bleu_1_score += sentence_bleu([gold_answer], tmp_response, weights=(1, 0, 0, 0))
         overall_bleu_2_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 1, 0, 0))
         overall_bleu_3_score += sentence_bleu([gold_answer], tmp_response, weights=(0, 0, 1, 0))
@@ -518,7 +518,7 @@ with tf.Session(config=config) as sess:
         summary_writer = tf.summary.FileWriter('%s/log' % FLAGS.train_dir, sess.graph)
         loss_step, time_step = np.zeros((1,)), .0
         previous_losses = [1e18] * 3
-        data_train = data_train[:50]
+        # data_train = data_train[:50]
         train_len = len(data_train)
         number_of_iteration = 5
 
