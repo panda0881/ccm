@@ -15,7 +15,7 @@ tf.app.flags.DEFINE_integer("symbols", 30000, "vocabulary size.")
 tf.app.flags.DEFINE_integer("num_entities", 21471, "entitiy vocabulary size.")
 tf.app.flags.DEFINE_integer("num_relations", 44, "relation size.")
 tf.app.flags.DEFINE_integer("embed_units", 300, "Size of word embedding.")
-tf.app.flags.DEFINE_integer("trans_units", 100, "Size of trans embedding.")
+tf.app.flags.DEFINE_integer("trans_units", 50, "Size of trans embedding.")
 tf.app.flags.DEFINE_integer("units", 64, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("layers", 2, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("batch_size", 10, "Batch size to use during training.")
@@ -367,16 +367,19 @@ with tf.Session(config=config) as sess:
         loss_step, time_step = np.zeros((1, )), .0
         previous_losses = [1e18]*3
         train_len = len(data_train)
-        while True:
+        number_of_iteration = 20
+        for i in range(number_of_iteration):
+            print('current iteration:', i, '/', number_of_iteration)
             st, ed = 0, FLAGS.batch_size * FLAGS.per_checkpoint
             random.shuffle(data_train)
             while st < train_len:
                 start_time = time.time()
+                show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
                 for batch in range(st, ed, FLAGS.batch_size):
                     loss_step += train(model, sess, data_train[batch:batch+FLAGS.batch_size]) / (ed - st)
 
-                show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
-                print("global step %d learning rate %.4f step-time %.2f loss %f perplexity %s"
+
+                    print("global step %d learning rate %.4f step-time %.2f loss %f perplexity %s"
                         % (model.global_step.eval(), model.lr, 
                             (time.time() - start_time) / ((ed - st) / FLAGS.batch_size), loss_step, show(np.exp(loss_step))))
                 model.saver.save(sess, '%s/checkpoint' % FLAGS.train_dir, 
@@ -392,6 +395,7 @@ with tf.Session(config=config) as sess:
                 loss_step, time_step = np.zeros((1, )), .0
                 st, ed = ed, min(train_len, ed + FLAGS.batch_size * FLAGS.per_checkpoint)
             model.saver_epoch.save(sess, '%s/epoch/checkpoint' % FLAGS.train_dir, global_step=model.global_step)
+            test(sess, model.saver, data_test, setnum=5000)
     else:
         model = Model(
                 FLAGS.symbols, 
