@@ -20,7 +20,7 @@ tf.app.flags.DEFINE_integer("num_entities", 21471, "entitiy vocabulary size.")
 tf.app.flags.DEFINE_integer("num_relations", 21, "relation size.")
 tf.app.flags.DEFINE_integer("embed_units", 300, "Size of word embedding.")
 tf.app.flags.DEFINE_integer("trans_units", 50, "Size of trans embedding.")
-tf.app.flags.DEFINE_integer("units", 16, "Size of each model layer.")
+tf.app.flags.DEFINE_integer("units", 512, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("layers", 2, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("batch_size", 4, "Batch size to use during training.")
 tf.app.flags.DEFINE_string("data_dir", "./data/none", "Data directory")
@@ -476,42 +476,42 @@ with tf.Session(config=config) as sess:
             entity_relation_embed,
             num_entities=len(entity_vocab) + len(relation_vocab),
             num_trans_units=FLAGS.trans_units)
-        # if tf.train.get_checkpoint_state(FLAGS.train_dir):
-        #     print("Reading model parameters from %s" % FLAGS.train_dir)
-        #     model.saver.restore(sess, tf.train.latest_checkpoint(FLAGS.train_dir))
-        # else:
-        #     print("Created model with fresh parameters.")
-        #     tf.global_variables_initializer().run()
-        #     op_in = model.symbol2index.insert(constant_op.constant(vocab),
-        #                                       constant_op.constant(list(range(len(vocab))), dtype=tf.int64))
-        #     sess.run(op_in)
-        #     op_out = model.index2symbol.insert(constant_op.constant(
-        #         list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
-        #     sess.run(op_out)
-        #     op_in = model.entity2index.insert(constant_op.constant(entity_vocab + relation_vocab),
-        #                                       constant_op.constant(list(range(len(entity_vocab) + len(relation_vocab))),
-        #                                                            dtype=tf.int64))
-        #     sess.run(op_in)
-        #     op_out = model.index2entity.insert(constant_op.constant(
-        #         list(range(len(entity_vocab) + len(relation_vocab))), dtype=tf.int64),
-        #         constant_op.constant(entity_vocab + relation_vocab))
-        #     sess.run(op_out)
-        print("Created model with fresh parameters.")
-        tf.global_variables_initializer().run()
-        op_in = model.symbol2index.insert(constant_op.constant(vocab),
-                                          constant_op.constant(list(range(len(vocab))), dtype=tf.int64))
-        sess.run(op_in)
-        op_out = model.index2symbol.insert(constant_op.constant(
-            list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
-        sess.run(op_out)
-        op_in = model.entity2index.insert(constant_op.constant(entity_vocab + relation_vocab),
-                                          constant_op.constant(list(range(len(entity_vocab) + len(relation_vocab))),
-                                                               dtype=tf.int64))
-        sess.run(op_in)
-        op_out = model.index2entity.insert(constant_op.constant(
-            list(range(len(entity_vocab) + len(relation_vocab))), dtype=tf.int64),
-            constant_op.constant(entity_vocab + relation_vocab))
-        sess.run(op_out)
+        if tf.train.get_checkpoint_state(FLAGS.data_dir):
+            print("Reading model parameters from %s" % FLAGS.data_dir)
+            model.saver.restore(sess, tf.train.latest_checkpoint(FLAGS.data_dir))
+        else:
+            print("Created model with fresh parameters.")
+            tf.global_variables_initializer().run()
+            op_in = model.symbol2index.insert(constant_op.constant(vocab),
+                                              constant_op.constant(list(range(len(vocab))), dtype=tf.int64))
+            sess.run(op_in)
+            op_out = model.index2symbol.insert(constant_op.constant(
+                list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
+            sess.run(op_out)
+            op_in = model.entity2index.insert(constant_op.constant(entity_vocab + relation_vocab),
+                                              constant_op.constant(list(range(len(entity_vocab) + len(relation_vocab))),
+                                                                   dtype=tf.int64))
+            sess.run(op_in)
+            op_out = model.index2entity.insert(constant_op.constant(
+                list(range(len(entity_vocab) + len(relation_vocab))), dtype=tf.int64),
+                constant_op.constant(entity_vocab + relation_vocab))
+            sess.run(op_out)
+        # print("Created model with fresh parameters.")
+        # tf.global_variables_initializer().run()
+        # op_in = model.symbol2index.insert(constant_op.constant(vocab),
+        #                                   constant_op.constant(list(range(len(vocab))), dtype=tf.int64))
+        # sess.run(op_in)
+        # op_out = model.index2symbol.insert(constant_op.constant(
+        #     list(range(len(vocab))), dtype=tf.int64), constant_op.constant(vocab))
+        # sess.run(op_out)
+        # op_in = model.entity2index.insert(constant_op.constant(entity_vocab + relation_vocab),
+        #                                   constant_op.constant(list(range(len(entity_vocab) + len(relation_vocab))),
+        #                                                        dtype=tf.int64))
+        # sess.run(op_in)
+        # op_out = model.index2entity.insert(constant_op.constant(
+        #     list(range(len(entity_vocab) + len(relation_vocab))), dtype=tf.int64),
+        #     constant_op.constant(entity_vocab + relation_vocab))
+        # sess.run(op_out)
 
         if FLAGS.log_parameters:
             model.print_parameters()
