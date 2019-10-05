@@ -379,6 +379,7 @@ with tf.Session(config=config) as sess:
         summary_writer = tf.summary.FileWriter('%s/log' % FLAGS.train_dir, sess.graph)
         loss_step, time_step = np.zeros((1, )), .0
         previous_losses = [1e18]*3
+        data_train = data_train[:500]
         train_len = len(data_train)
         number_of_iteration = 10
 
@@ -392,7 +393,7 @@ with tf.Session(config=config) as sess:
             for tmp_train_data in tqdm(train_data_by_batch):
                 # print('number of example:', len(tmp_train_data))
                 loss_step += train(model, sess, tmp_train_data)
-            loss_step /= train_len
+            loss_step /= len(train_data_by_batch)
             show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
             print("global step %d learning rate %.4f loss %f perplexity %s"
                   % (model.global_step.eval(), model.lr, loss_step, show(np.exp(loss_step))))
