@@ -328,28 +328,28 @@ def new_test(sess, saver, data_dev, setnum=5000):
                     break
             results.append(result)
         # st, ed = ed, ed + FLAGS.batch_size
-    match_entity_sum = [.0] * 4
-    cnt = 0
-    for post, response, result, match_triples, triples, entities in zip([data['post'] for data in data_dev],
-                                                                        [data['response'] for data in data_dev],
-                                                                        results, [data['match_triples'] for data in
-                                                                                  data_dev],
-                                                                        [data['all_triples'] for data in data_dev],
-                                                                        [data['all_entities'] for data in
-                                                                         data_dev]):
-        setidx = cnt / setnum
-        result_matched_entities = []
-        triples = [csk_triples[tri] for triple in triples for tri in triple]
-        match_triples = [csk_triples[triple] for triple in match_triples]
-        entities = [csk_entities[x] for entity in entities for x in entity]
-        matches = [x for triple in match_triples for x in [triple.split('$$')[0], triple.split('$$')[2]] if
-                   x in response]
-
-        for word in result:
-            if word in entities:
-                result_matched_entities.append(word)
-        match_entity_sum[setidx] += len(set(result_matched_entities))
-        cnt += 1
+    # match_entity_sum = [.0] * 4
+    # cnt = 0
+    # for post, response, result, match_triples, triples, entities in zip([data['post'] for data in data_dev],
+    #                                                                     [data['response'] for data in data_dev],
+    #                                                                     results, [data['match_triples'] for data in
+    #                                                                               data_dev],
+    #                                                                     [data['all_triples'] for data in data_dev],
+    #                                                                     [data['all_entities'] for data in
+    #                                                                      data_dev]):
+    #     setidx = int(cnt / setnum)
+    #     result_matched_entities = []
+    #     triples = [csk_triples[tri] for triple in triples for tri in triple]
+    #     match_triples = [csk_triples[triple] for triple in match_triples]
+    #     entities = [csk_entities[x] for entity in entities for x in entity]
+    #     matches = [x for triple in match_triples for x in [triple.split('$$')[0], triple.split('$$')[2]] if
+    #                x in response]
+    #
+    #     for word in result:
+    #         if word in entities:
+    #             result_matched_entities.append(word)
+    #     match_entity_sum[setidx] += len(set(result_matched_entities))
+    #     cnt += 1
 
     overall_bleu_score = 0
     print('start to calculate the bleu score')
@@ -359,17 +359,19 @@ def new_test(sess, saver, data_dev, setnum=5000):
         overall_bleu_score += tmp_bleu_score
     print('Average bleu score:', overall_bleu_score/len(results))
 
-    match_entity_sum = [m / setnum for m in match_entity_sum] + [sum(match_entity_sum) / len(data_dev)]
+    # match_entity_sum = [m / setnum for m in match_entity_sum] + [sum(match_entity_sum) / len(data_dev)]
     losses = [np.sum(loss[x:x + setnum]) / float(setnum) for x in range(0, setnum * 4, setnum)] + [
         np.sum(loss) / float(setnum * 4)]
     losses = [np.exp(x) for x in losses]
 
-    def show(x):
-        return ', '.join([str(v) for v in x])
+    # def show(x):
+    #     return ', '.join([str(v) for v in x])
 
-    print('perplexity: %s\n\tmatch_entity_rate: %s\n%s\n\n' % (show(losses), show(match_entity_sum), '=' * 50))
-    print(
-        'perplexity: %s\n\tmatch_entity_rate: %s\n\n' % (show(losses), show(match_entity_sum)))
+    print('perplexity:', sum(losses)/len(losses))
+
+    # print('perplexity: %s\n\tmatch_entity_rate: %s\n%s\n\n' % (show(losses), show(match_entity_sum), '=' * 50))
+    # print(
+    #     'perplexity: %s\n\tmatch_entity_rate: %s\n\n' % (show(losses), show(match_entity_sum)))
 
 
 def test(sess, saver, data_dev, setnum=5000):
