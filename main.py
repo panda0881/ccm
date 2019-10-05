@@ -536,7 +536,7 @@ with tf.Session(config=config) as sess:
             show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
             print("global step %d learning rate %.4f loss %f perplexity %s"
                   % (model.global_step.eval(), model.lr, loss_step, show(np.exp(loss_step))))
-            model.saver.save(sess, '%s/checkpoint.tmp' % FLAGS.train_dir,
+            model.saver.save(sess, '%s/checkpoint.tmp' % FLAGS.data_dir,
                              global_step=model.global_step)
             print('Dev set:')
             new_test(sess, model.saver, data_dev)
