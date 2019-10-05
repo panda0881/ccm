@@ -25,7 +25,7 @@ tf.app.flags.DEFINE_string("data_dir", "./data/none", "Data directory")
 tf.app.flags.DEFINE_string("train_dir", "./train", "Training directory.")
 tf.app.flags.DEFINE_integer("per_checkpoint", 1000, "How many steps to do per checkpoint.")
 tf.app.flags.DEFINE_integer("inference_version", 0, "The version for inferencing.")
-tf.app.flags.DEFINE_boolean("log_parameters", True, "Set to True to show the parameters")
+tf.app.flags.DEFINE_boolean("log_parameters", False, "Set to True to show the parameters")
 tf.app.flags.DEFINE_string("inference_path", "test", "Set filename of inference")
 tf.app.flags.DEFINE_string("gpu", "0", "which gpu to use")
 
