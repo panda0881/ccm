@@ -4,6 +4,7 @@ from OpenKE.config import Config
 from OpenKE.models.TransE import TransE
 import tensorflow as tf
 import numpy as np
+import os
 
 # with open('kgs/lemmatized_commonsense_knowledge.json', 'r', encoding='utf-8') as f:
 #     test_data = json.load(f)
@@ -28,8 +29,8 @@ def train_TransE(target_folder):
     con.set_log_on(1)  # set to 1 to print the loss
 
     con.set_work_threads(30)
-    con.set_train_times(10)
-    con.set_nbatches(5)
+    con.set_train_times(1000)
+    con.set_nbatches(50)
     con.set_alpha(0.001)
     con.set_margin(1.0)
     con.set_bern(0)
@@ -99,7 +100,7 @@ def prepare_kg(source_resource, target_folder):
                 all_vocab.append(w)
             for w in tmp_tail.split(' '):
                 all_vocab.append(w)
-            break
+            # break
 
     with open(source_resource, 'r', encoding='utf-8') as f:
         print('We are working on kg:', source_resource)
@@ -117,7 +118,7 @@ def prepare_kg(source_resource, target_folder):
                 all_vocab.append(w)
             for w in tmp_tail.split(' '):
                 all_vocab.append(w)
-            break
+            # break
 
     all_vocab = list(set(all_vocab))
     current_kg['csk_triples'] = list(set(current_kg['csk_triples']))
@@ -285,7 +286,20 @@ def process_data(tmp_location):
     convert_data('dialog_dataset/formatted_dev.json', tmp_location + '/validset.txt', current_kg)
     convert_data('dialog_dataset/formatted_test.json', tmp_location + '/testset.txt', current_kg)
 
+os.environ['CUDA_VISIBLE_DEVICE'] = '3'
 
-prepare_kg('kgs/conceptnet.txt', 'data/none')
-process_data('data/none')
+prepare_kg('kgs/conceptnet.txt', 'data/concept')
+process_data('data/concept')
+prepare_kg('kgs/COMET_original_1.txt', 'data/COMET_original_1')
+process_data('data/concept')
+prepare_kg('kgs/COMET_external_10.txt', 'data/COMET_external_10')
+process_data('data/concept')
+prepare_kg('kgs/LAMA_original_1.txt', 'data/LAMA_original_1')
+process_data('data/concept')
+prepare_kg('kgs/LAMA_external_10.txt', 'data/LAMA_external_10')
+process_data('data/concept')
+prepare_kg('kgs/auto_conceptnet_1_percent.txt', 'data/Auto_conceptnet_1_percent')
+process_data('data/concept')
+prepare_kg('kgs/auto_conceptnet_10_percent.txt', 'data/Auto_conceptnet_10_percent')
+process_data('data/concept')
 
