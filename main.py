@@ -106,8 +106,8 @@ def build_vocab(path, raw_vocab, trans='transE'):
     embed = []
     for word in vocab_list:
         if word in vectors:
-            print(len(vectors[word].split()))
-            vector = np.array(map(float, vectors[word].split()))
+            # print(len(vectors[word].split()))
+            vector = np.array(map(float, vectors[word].split()), dtype=np.float32)
         else:
             # print('We cannot find word:', word)
             vector = np.zeros((FLAGS.embed_units), dtype=np.float32)
