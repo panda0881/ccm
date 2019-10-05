@@ -302,8 +302,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     for j in range(int(train_len / FLAGS.batch_size) + 1):
         if len(data_dev[j * FLAGS.batch_size:(j + 1) * FLAGS.batch_size]) > 0:
             evaluation_data_by_batch.append(data_dev[j * FLAGS.batch_size:(j + 1) * FLAGS.batch_size])
-    print('start to generate response')
-    for tmp_data in tqdm(evaluation_data_by_batch):
+    # print('start to generate response')
+    for tmp_data in evaluation_data_by_batch:
         # selected_data = data_dev[st:ed]
         batched_data = gen_batched_data(tmp_data)
         # print(batched_data)
@@ -352,8 +352,8 @@ def new_test(sess, saver, data_dev, setnum=5000):
     #     cnt += 1
 
     overall_bleu_score = 0
-    print('start to calculate the bleu score')
-    for i, tmp_response in tqdm(enumerate(results)):
+    # print('start to calculate the bleu score')
+    for i, tmp_response in enumerate(results):
         gold_answer = data_dev[i]['response']
         tmp_bleu_score = sentence_bleu([gold_answer], tmp_response)
         overall_bleu_score += tmp_bleu_score
@@ -533,7 +533,7 @@ with tf.Session(config=config) as sess:
         summary_writer = tf.summary.FileWriter('%s/log' % FLAGS.train_dir, sess.graph)
         loss_step, time_step = np.zeros((1,)), .0
         previous_losses = [1e18] * 3
-        data_train = data_train[:50]
+        # data_train = data_train[:50]
         train_len = len(data_train)
         number_of_iteration = 5
 
