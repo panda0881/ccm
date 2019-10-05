@@ -29,7 +29,7 @@ def train_TransE(target_folder):
     con.set_log_on(1)  # set to 1 to print the loss
 
     con.set_work_threads(30)
-    con.set_train_times(1000)
+    con.set_train_times(2000)
     con.set_nbatches(50)
     con.set_alpha(0.001)
     con.set_margin(1.0)
