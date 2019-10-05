@@ -377,7 +377,7 @@ with tf.Session(config=config) as sess:
         loss_step, time_step = np.zeros((1, )), .0
         previous_losses = [1e18]*3
         train_len = len(data_train)
-        number_of_iteration = 20
+        number_of_iteration = 10
 
         for i in range(number_of_iteration):
             print('current iteration:', i, '/', number_of_iteration)
@@ -387,6 +387,7 @@ with tf.Session(config=config) as sess:
             for j in range(int(train_len/FLAGS.batch_size)+1):
                 train_data_by_batch.append(data_train[j*FLAGS.batch_size:(j+1)*FLAGS.batch_size])
             for tmp_train_data in tqdm(train_data_by_batch):
+                print('number of example:', len(tmp_train_data))
                 loss_step += train(model, sess, tmp_train_data)
             loss_step /= train_len
             show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
