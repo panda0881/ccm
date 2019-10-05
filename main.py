@@ -157,7 +157,10 @@ def gen_batched_data(data):
     encoder_len = max([len(item['post']) for item in data])+1
     decoder_len = max([len(item['response']) for item in data])+1
     triple_num = max([len(item['all_triples']) for item in data])+1
-    triple_len = max([len(tri) for item in data for tri in item['all_triples']])
+    try:
+        triple_len = max([len(tri) for item in data for tri in item['all_triples']])
+    except:
+        triple_len = 1
     max_length = 20
     posts, responses, posts_length, responses_length = [], [], [], []
     entities, triples, matches, post_triples, response_triples = [], [], [], [], []
@@ -387,7 +390,7 @@ with tf.Session(config=config) as sess:
             for j in range(int(train_len/FLAGS.batch_size)+1):
                 train_data_by_batch.append(data_train[j*FLAGS.batch_size:(j+1)*FLAGS.batch_size])
             for tmp_train_data in tqdm(train_data_by_batch):
-                print('number of example:', len(tmp_train_data))
+                # print('number of example:', len(tmp_train_data))
                 loss_step += train(model, sess, tmp_train_data)
             loss_step /= train_len
             show = lambda a: '[%s]' % (' '.join(['%.2f' % x for x in a]))
