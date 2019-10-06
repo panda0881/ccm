@@ -47,6 +47,6 @@
     "rnn_hidden_size": 512,
     "n_layers": 2,
     "attn_score_method": "dot",
-    "dropout": 0.3
+    "dropout": 0.5
   }
 }
