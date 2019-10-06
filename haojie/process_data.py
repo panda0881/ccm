@@ -48,7 +48,7 @@ def process_data(kg_path, output_path):
                 tmp_head = tmp_words[1]
                 tmp_relation = tmp_words[0]
                 tmp_tail = tmp_words[2]
-                tmp_knowledge.append({'head': tmp_head, 'tail': tmp_tail, 'relation': tmp_relation})
+                tmp_knowledge.append(tmp_head+'$'+tmp_relation+'$'+tmp_tail)
 
     with open(kg_path, 'r', encoding='utf-8') as f:
         for line in f:
@@ -56,7 +56,9 @@ def process_data(kg_path, output_path):
             tmp_head = tmp_words[1]
             tmp_relation = tmp_words[0]
             tmp_tail = tmp_words[2]
-            tmp_knowledge.append({'head': tmp_head, 'tail': tmp_tail, 'relation': tmp_relation})
+            tmp_knowledge.append(tmp_head + '$' + tmp_relation + '$' + tmp_tail)
+
+    tmp_knowledge = list(set(tmp_knowledge))
 
     with open('/home/guest/hzhangal/ccm/dialog_dataset/formatted_train.json', 'r', encoding='utf-8') as f:
         train_data = json.load(f)
@@ -75,8 +77,8 @@ def process_data(kg_path, output_path):
         new_example['response'] = tmp_example['response']
         new_example['omcs_triplets'] = list()
         for tmp_k in tmp_knowledge:
-            if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
-                new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
+            if tmp_k.split('$')[0] in tmp_example['post'] or tmp_k.split('$')[1] in tmp_example['post']:
+                new_example['omcs_triplets'].append(tmp_k)
         new_train_data.append(new_example)
 
     print('We are working on dev data')
@@ -87,8 +89,8 @@ def process_data(kg_path, output_path):
         new_example['response'] = tmp_example['response']
         new_example['omcs_triplets'] = list()
         for tmp_k in tmp_knowledge:
-            if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
-                new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
+            if tmp_k.split('$')[0] in tmp_example['post'] or tmp_k.split('$')[1] in tmp_example['post']:
+                new_example['omcs_triplets'].append(tmp_k)
         new_dev_data.append(new_example)
 
     print('We are working on test data')
@@ -99,8 +101,8 @@ def process_data(kg_path, output_path):
         new_example['response'] = tmp_example['response']
         new_example['omcs_triplets'] = list()
         for tmp_k in tmp_knowledge:
-            if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
-                new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
+            if tmp_k.split('$')[0] in tmp_example['post'] or tmp_k.split('$')[1] in tmp_example['post']:
+                new_example['omcs_triplets'].append(tmp_k)
         new_test_data.append(new_example)
 
     with open(output_path+'train.json', 'w', encoding='utf-8') as f:
