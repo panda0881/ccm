@@ -22,17 +22,17 @@ class Batch(object):
         self.dec_start_inps = None
         self.dec_tgts = None
 
-        self.aser_lens = None
-        self.aser_id_inps = None
-        self.aser_triple_inps = None
+        # self.aser_lens = None
+        # self.aser_id_inps = None
+        # self.aser_triple_inps = None
 
         self.omcs_lens = None
         self.omcs_id_inps = None
         self.omcs_triple_inps = None
 
-        self.knowly_lens = None
-        self.knowly_id_inps = None
-        self.knowly_triple_inps = None
+        # self.knowly_lens = None
+        # self.knowly_id_inps = None
+        # self.knowly_triple_inps = None
 
         self.build_batch(data)
 
@@ -57,13 +57,13 @@ class Batch(object):
         self.dec_tgts = (torch.LongTensor(dec_tgts),
                          torch.LongTensor(response_lens))
 
-        aser_lens = [len(t[2]) for t in data]
-        self.aser_lens = torch.LongTensor(aser_lens)
-        aser_id_inps = [padding_list(t[2], self.opt.max_aser_triples, pad_idx) for t in data]
-        self.aser_id_inps = torch.LongTensor(aser_id_inps)
-        aser_triple_inps = [padding_list(
-            t[3], self.opt.max_aser_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
-        self.aser_triple_inps = torch.LongTensor(aser_triple_inps)
+        # aser_lens = [len(t[2]) for t in data]
+        # self.aser_lens = torch.LongTensor(aser_lens)
+        # aser_id_inps = [padding_list(t[2], self.opt.max_aser_triples, pad_idx) for t in data]
+        # self.aser_id_inps = torch.LongTensor(aser_id_inps)
+        # aser_triple_inps = [padding_list(
+        #     t[3], self.opt.max_aser_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
+        # self.aser_triple_inps = torch.LongTensor(aser_triple_inps)
 
         omcs_lens = [len(t[4]) for t in data]
         self.omcs_lens = torch.LongTensor(omcs_lens)
@@ -73,28 +73,28 @@ class Batch(object):
             t[5], self.opt.max_omcs_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
         self.omcs_triple_inps = torch.LongTensor(omcs_triple_inps)
 
-        knowly_lens = [len(t[6]) for t in data]
-        self.knowly_lens = torch.LongTensor(knowly_lens)
-        knowly_id_inps = [padding_list(t[6], self.opt.max_knowly_triples, pad_idx) for t in data]
-        self.knowly_id_inps = torch.LongTensor(knowly_id_inps)
-        knowly_triple_inps = [padding_list(
-            t[7], self.opt.max_knowly_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
-        self.knowly_triple_inps = torch.LongTensor(knowly_triple_inps)
+        # knowly_lens = [len(t[6]) for t in data]
+        # self.knowly_lens = torch.LongTensor(knowly_lens)
+        # knowly_id_inps = [padding_list(t[6], self.opt.max_knowly_triples, pad_idx) for t in data]
+        # self.knowly_id_inps = torch.LongTensor(knowly_id_inps)
+        # knowly_triple_inps = [padding_list(
+        #     t[7], self.opt.max_knowly_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
+        # self.knowly_triple_inps = torch.LongTensor(knowly_triple_inps)
 
     def cuda(self):
         self.enc_inps = [t.cuda(async=True) for t in self.enc_inps]
         self.dec_inps = [t.cuda(async=True) for t in self.dec_inps]
         self.dec_start_inps = self.dec_start_inps.cuda()
         self.dec_tgts = [t.cuda(async=True) for t in self.dec_tgts]
-        self.aser_lens = self.aser_lens.cuda(async=True)
-        self.aser_id_inps = self.aser_id_inps.cuda(async=True)
-        self.aser_triple_inps = self.aser_triple_inps.cuda(async=True)
+        # self.aser_lens = self.aser_lens.cuda(async=True)
+        # self.aser_id_inps = self.aser_id_inps.cuda(async=True)
+        # self.aser_triple_inps = self.aser_triple_inps.cuda(async=True)
         self.omcs_lens = self.omcs_lens.cuda(async=True)
         self.omcs_id_inps = self.omcs_id_inps.cuda(async=True)
         self.omcs_triple_inps = self.omcs_triple_inps.cuda(async=True)
-        self.knowly_lens = self.knowly_lens.cuda(async=True)
-        self.knowly_id_inps = self.knowly_id_inps.cuda(async=True)
-        self.knowly_triple_inps = self.knowly_triple_inps.cuda(async=True)
+        # self.knowly_lens = self.knowly_lens.cuda(async=True)
+        # self.knowly_id_inps = self.knowly_id_inps.cuda(async=True)
+        # self.knowly_triple_inps = self.knowly_triple_inps.cuda(async=True)
 
 
 class DialogueDataset(torch.utils.data.Dataset):
@@ -117,26 +117,26 @@ class DialogueDataset(torch.utils.data.Dataset):
 
                 posts = []
                 responses = []
-                aser_ids_list = []
-                aser_triples_list = []
+                # aser_ids_list = []
+                # aser_triples_list = []
                 omcs_ids_list = []
                 omcs_triples_list = []
-                knowly_ids_list = []
-                knowly_triples_list = []
+                # knowly_ids_list = []
+                # knowly_triples_list = []
                 for res in res_list:
                     records = res.get()
                     posts.extend(records[0])
                     responses.extend(records[1])
-                    aser_ids_list.extend(records[2])
-                    aser_triples_list.extend(records[3])
+                    # aser_ids_list.extend(records[2])
+                    # aser_triples_list.extend(records[3])
                     omcs_ids_list.extend(records[4])
                     omcs_triples_list.extend(records[5])
-                    knowly_ids_list.extend(records[6])
-                    knowly_triples_list.extend(records[7])
+                    # knowly_ids_list.extend(records[6])
+                    # knowly_triples_list.extend(records[7])
                 self.data = [(posts[i], responses[i],
-                              aser_ids_list[i], aser_triples_list[i],
-                              omcs_ids_list[i], omcs_triples_list[i],
-                              knowly_ids_list[i], knowly_triples_list[i]
+                              # aser_ids_list[i], aser_triples_list[i],
+                              omcs_ids_list[i], omcs_triples_list[i]
+                              # knowly_ids_list[i], knowly_triples_list[i]
                               )
                              for i in range(len(posts))]
             else:
@@ -163,15 +163,15 @@ class DialogueDataset(torch.utils.data.Dataset):
             response_idx = [vocabs["word"].to_idx(t) for t in record["response"].lower().split()[:self.opt.max_response_length]]
             responses.append(response_idx)
 
-            aser_ids_list.append(
-                [vocabs["aser"].to_idx(t) for t in record["aser_triples"][:self.opt.max_aser_triples]])
-            tmp = []
-            for event_pair in record["aser_triples"][:self.opt.max_aser_triples]:
-                e1, r, e2 = event_pair.split("$")
-                tmp.append([vocabs["aser_event"].to_idx(e1),
-                            vocabs["aser_relation"].to_idx(r),
-                            vocabs["aser_event"].to_idx(e2)])
-            aser_triples_list.append(tmp)
+            # aser_ids_list.append(
+            #     [vocabs["aser"].to_idx(t) for t in record["aser_triples"][:self.opt.max_aser_triples]])
+            # tmp = []
+            # for event_pair in record["aser_triples"][:self.opt.max_aser_triples]:
+            #     e1, r, e2 = event_pair.split("$")
+            #     tmp.append([vocabs["aser_event"].to_idx(e1),
+            #                 vocabs["aser_relation"].to_idx(r),
+            #                 vocabs["aser_event"].to_idx(e2)])
+            # aser_triples_list.append(tmp)
 
             omcs_ids_list.append(
                 [vocabs["omcs"].to_idx(t) for t in record["omcs_triples"][:self.opt.max_omcs_triples]])
@@ -183,15 +183,15 @@ class DialogueDataset(torch.utils.data.Dataset):
                             vocabs["omcs_event"].to_idx(e2)])
             omcs_triples_list.append(tmp)
 
-            knowly_ids_list.append(
-                [vocabs["knowlywood"].to_idx(t) for t in record["knowlywood_triples"][:self.opt.max_knowly_triples]])
-            tmp = []
-            for event_pair in record["knowlywood_triples"][:self.opt.max_knowly_triples]:
-                e1, r, e2 = event_pair.split("$")
-                tmp.append([vocabs["knowlywood_event"].to_idx(e1),
-                            vocabs["knowlywood_relation"].to_idx(r),
-                            vocabs["knowlywood_event"].to_idx(e2)])
-            knowly_triples_list.append(tmp)
+            # knowly_ids_list.append(
+            #     [vocabs["knowlywood"].to_idx(t) for t in record["knowlywood_triples"][:self.opt.max_knowly_triples]])
+            # tmp = []
+            # for event_pair in record["knowlywood_triples"][:self.opt.max_knowly_triples]:
+            #     e1, r, e2 = event_pair.split("$")
+            #     tmp.append([vocabs["knowlywood_event"].to_idx(e1),
+            #                 vocabs["knowlywood_relation"].to_idx(r),
+            #                 vocabs["knowlywood_event"].to_idx(e2)])
+            # knowly_triples_list.append(tmp)
 
         return posts, responses, aser_ids_list, aser_triples_list,\
                omcs_ids_list, omcs_triples_list, knowly_ids_list, knowly_triples_list
