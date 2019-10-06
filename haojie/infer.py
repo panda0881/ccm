@@ -41,7 +41,7 @@ def model_infer(model_path, inp_path, outp_path):
     s2 = "Test, Loss: {:.2f}, PPL: {:.2f}".format(per_word_loss, np.exp(per_word_loss))
     print(s1)
     print(s2)
-    with open(outp_path, "w") as f:
+    with open(outp_path, "w", encoding='utf-8') as f:
         for pred in pred_list:
             if BOS_WORD in pred:
                 pred.remove(BOS_WORD)
