@@ -169,31 +169,31 @@ def process_data(kg_path, output_path):
     torch.save(vocabs, output_path+'vocab.pt')
 
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument("--input", type=str, default='/home/guest/hzhangal/ccm/kgs/conceptnet.txt',
-#                         help="choose which gpu to use")
-# parser.add_argument("--output", type=str, default='/home/guest/hzhangal/ccm/haojie/data/conceptnet/',
-#                         help="choose which gpu to use")
-# args = parser.parse_args()
-#
-#
-# if args.input == 'all':
-#     process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
-#     process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
-#     process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
-#     process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
-#     process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
-#     process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
-# else:
-#     process_data(args.input, args.output)
+parser = argparse.ArgumentParser()
+parser.add_argument("--input", type=str, default='/home/guest/hzhangal/ccm/kgs/conceptnet.txt',
+                        help="choose which gpu to use")
+parser.add_argument("--output", type=str, default='/home/guest/hzhangal/ccm/haojie/data/conceptnet/',
+                        help="choose which gpu to use")
+args = parser.parse_args()
 
-with open('/home/guest/hzhangal/ccm/dialog_dataset/formatted_test.json', 'r', encoding='utf-8') as f:
-    test_data = json.load(f)
 
-with open('test.response.txt', 'w', encoding='utf-8') as f:
-    for tmp_example in test_data:
-        f.write(tmp_example['response'])
-        f.write('\n')
+if args.input == 'all':
+    process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
+    process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
+    process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
+    process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
+    process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
+    process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
+else:
+    process_data(args.input, args.output)
+
+# with open('/home/guest/hzhangal/ccm/dialog_dataset/formatted_test.json', 'r', encoding='utf-8') as f:
+#     test_data = json.load(f)
+#
+# with open('test.response.txt', 'w', encoding='utf-8') as f:
+#     for tmp_example in test_data:
+#         f.write(tmp_example['response'])
+#         f.write('\n')
 
 
 print('end')

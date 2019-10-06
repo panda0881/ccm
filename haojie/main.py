@@ -16,6 +16,7 @@ from dialogue.toolbox.vocab import PAD_WORD, BOS_WORD, EOS_WORD
 from tqdm import tqdm
 from nltk.translate.bleu_score import sentence_bleu
 import numpy as np
+import subprocess
 
 
 def train_model(train_opt):
@@ -175,8 +176,13 @@ if __name__ == "__main__":
 
     print('start to evaluate')
     # model_evaluate(args.folder + '/cache/model/best_model.pt', args.folder + '/test.json')
-    tmp_infer_command = 'python infer.py ' + args.folder + '/best_model.pt ' + args.folder + '/test.json ' + args.folder + '/cache/results/pred.test.txt'
 
-    tmp_evaluate_command = 'perl scripts/multi-bleu.perl data/test.response.txt < ' + args.folder + '/cache/exp_aser2seq/results/pred.test.txt'
+    print('start to generate the prediction')
+    tmp_infer_command = 'python infer.py ' + args.folder + '/best_model.pt ' + args.folder + '/test.json ' + args.folder + '/cache/results/pred.test.txt'
+    subprocess.run(tmp_infer_command)
+    print('start to evaluate')
+    tmp_evaluate_command = 'perl scripts/multi-bleu.perl test.response.txt < ' + args.folder + '/cache/results/pred.test.txt'
+    subprocess.run(tmp_evaluate_command)
+
 
 print('end')
