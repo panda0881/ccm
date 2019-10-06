@@ -13,6 +13,9 @@ from dialogue.toolbox.logging import init_logger
 from dialogue.toolbox.optim import Optim
 from dialogue.toolbox.utils import get_num_parameters
 from dialogue.toolbox.vocab import PAD_WORD, BOS_WORD, EOS_WORD
+from tqdm import tqdm
+from nltk.translate.bleu_score import sentence_bleu
+import numpy as np
 
 
 def train_model(train_opt):
@@ -91,18 +94,88 @@ def train_model(train_opt):
     trainer.train()
     logger.info("Total training time: %.2f s" % (time.time() - total_st))
 
-test_dada = list()
-with open('data/test.json', 'r', encoding='utf-8') as f:
-    # test_dada = json.load(f)
-    for line in f:
-        test_dada.append(json.loads(line))
+
+def model_evaluate(model_path, inp_path):
+    model_file = torch.load(model_path)
+    train_opt = model_file["train_opt"]
+    vocabs = model_file["vocabs"]
+    test_data = list()
+    with open(inp_path, 'r') as f:
+        for line in f:
+            test_data.append(json.loads(line))
+
+    meta_opt = train_opt.meta
+    test_iter = DialogueDatasetIterator(
+        file_path=inp_path, vocabs=vocabs,
+        epochs=meta_opt.epochs, batch_size=1,
+        is_train=False, n_workers=meta_opt.n_workers,
+        use_cuda=meta_opt.use_cuda, opt=meta_opt)
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(meta_opt.gpu)
+
+    model = model_file["model"]
+    model.eval()
+    model.flatten_parameters()
+
+    pred_list = []
+    total_loss = 0
+    total_word_num = 0
+    for batch in tqdm(test_iter):
+        result_dict = model.run_batch(batch)
+        total_loss += result_dict["loss"].item()
+        total_word_num += result_dict["num_words"]
+        preds_idx = model.predict_batch(
+            batch, max_len=20, beam_size=5, eos_val=vocabs["word"].to_idx(EOS_WORD))
+        preds = [[vocabs["word"].to_word(t) for t in item] for item in preds_idx]
+        pred_list.extend(preds)
+
+    per_word_loss = total_loss / total_word_num
+    s1 = "Valid, Loss: {:.2f}, PPL: {:.2f}".format(np.log(model_file["score"]), model_file["score"])
+    s2 = "Test, Loss: {:.2f}, PPL: {:.2f}".format(per_word_loss, np.exp(per_word_loss))
+    print(s1)
+    print(s2)
+    overall_bleu_1_score = 0
+    overall_bleu_2_score = 0
+    overall_bleu_3_score = 0
+    overall_bleu_4_score = 0
+    overall_bleu_score = 0
+    for i, raw_predict in enumerate(pred_list):
+        tmp_predict = list()
+        for w in raw_predict:
+            if w == BOS_WORD or w == EOS_WORD:
+                continue
+            tmp_predict.append(w)
+        overall_bleu_1_score += sentence_bleu([test_data], tmp_predict, weights=(1, 0, 0, 0))
+        overall_bleu_2_score += sentence_bleu([gold_answer], tmp_predict, weights=(0, 1, 0, 0))
+        overall_bleu_3_score += sentence_bleu([gold_answer], tmp_predict, weights=(0, 0, 1, 0))
+        overall_bleu_4_score += sentence_bleu([gold_answer], tmp_predict, weights=(0, 0, 0, 1))
+        overall_bleu_score += sentence_bleu([gold_answer], tmp_predict, weights=(0.25, 0.25, 0.25, 0.25))
+    print('Average bleu score:', 'bleu1:', overall_bleu_1_score / len(pred_list), 'bleu2:',
+          overall_bleu_2_score / len(pred_list), 'bleu3:', overall_bleu_3_score / len(pred_list), 'bleu4:',
+          overall_bleu_4_score / len(pred_list), 'average:', overall_bleu_score / len(pred_list))
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-config", type=str, default="config/config.json",
+    parser.add_argument("--config", type=str, default="config/config_omcs2seq.json",
                         help="configuration file path")
+    parser.add_argument("--folder", type=str, default="data/conceptnet",
+                        help="which data to train on")
+    parser.add_argument("--gpu", type=str, default="0",
+                        help="which data to use")
     args = parser.parse_args()
-    opt = Config(json.load(open(args.config)))
+    raw_config = json.load(open(args.config))
+    raw_config['meta']['data_dir'] = args.folder
+    raw_config['meta']['vocab_path'] = args.folder + '/vocab.pt'
+    raw_config['meta']['data_cache_dir'] = args.folder + '/cache/data/'
+    raw_config['meta']['save_model'] = args.folder + '/cache/model'
+    raw_config['meta']['save_results'] = args.folder + '/cache/results'
+    raw_config['meta']['save_log'] = args.folder + '/cache/log'
+    raw_config['meta']['gpu'] = args.gpu
+    opt = Config(raw_config)
     train_model(opt)
+
+    print('start to evaluate')
+    model_infer(args.folder + '/cache/model/best_model.pt', args.folder + '/test.json')
 
 print('end')
