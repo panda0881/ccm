@@ -8,7 +8,7 @@
     "save_results": "cache/results",
     "save_log": "cache/log/",
     "use_pre_word_emb": false,
-    "batch_size": 32,
+    "batch_size": 64,
     "valid_batch_size": 32,
     "epochs": null,
     "print_every": 100,
