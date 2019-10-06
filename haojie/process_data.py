@@ -3,6 +3,7 @@ from tqdm import tqdm
 from dialogue.toolbox.vocab import Vocabulary, UNK_WORD, PAD_WORD, BOS_WORD, EOS_WORD, get_pretrained_embedding
 from collections import Counter
 import torch
+import argparse
 
 WORD_VOCAB_SIZE = 15000
 ASER_VOCAB_SIZE = 40000
@@ -39,6 +40,16 @@ def build_vocabs(counters):
 def process_data(kg_path, output_path):
     print('We are working on:', kg_path)
     tmp_knowledge = list()
+
+    if kg_path != '/home/guest/hzhangal/ccm/kgs/conceptnet.txt':
+        with open('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', 'r', encoding='utf-8') as f:
+            for line in f:
+                tmp_words = line[:-1].split('\t')
+                tmp_head = tmp_words[1]
+                tmp_relation = tmp_words[0]
+                tmp_tail = tmp_words[2]
+                tmp_knowledge.append({'head': tmp_head, 'tail': tmp_tail, 'relation': tmp_relation})
+
     with open(kg_path, 'r', encoding='utf-8') as f:
         for line in f:
             tmp_words = line[:-1].split('\t')
@@ -131,10 +142,21 @@ def process_data(kg_path, output_path):
     vocabs = build_vocabs(counters)
     torch.save(vocabs, output_path+'vocab.pt')
 
-process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
-process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txtt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
-process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
-process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
-process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
-process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-input", type=str, default='/home/guest/hzhangal/ccm/kgs/conceptnet.txt',
+                        help="choose which gpu to use")
+parser.add_argument("-output", type=str, default='/home/guest/hzhangal/ccm/haojie/data/conceptnet/',
+                        help="choose which gpu to use")
+args = parser.parse_args()
+
+process_data(args.input, args.output)
+
+
+# process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
+# process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txtt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
+# process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
+# process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
+# process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
+# process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
 print('end')
