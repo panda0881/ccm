@@ -171,9 +171,12 @@ if __name__ == "__main__":
     raw_config['meta']['save_log'] = args.folder + '/cache/log'
     raw_config['meta']['gpu'] = args.gpu
     opt = Config(raw_config)
-    train_model(opt)
+    # train_model(opt)
 
     print('start to evaluate')
-    model_evaluate(args.folder + '/cache/model/best_model.pt', args.folder + '/test.json')
+    # model_evaluate(args.folder + '/cache/model/best_model.pt', args.folder + '/test.json')
+    tmp_infer_command = 'python infer.py ' + args.folder + '/best_model.pt ' + args.folder + '/test.json ' + args.folder + '/cache/results/pred.test.txt'
+
+    tmp_evaluate_command = 'perl scripts/multi-bleu.perl data/test.response.txt < ' + args.folder + '/cache/exp_aser2seq/results/pred.test.txt'
 
 print('end')
