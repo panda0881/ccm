@@ -149,7 +149,7 @@ def process_data(kg_path, output_path):
     omcs_counter = Counter()
     omcs_event_counter = Counter()
     omcs_rel_counter = Counter()
-    for record in tqdm(train_data):
+    for record in tqdm(new_train_data):
         word_counter.update(record["post"].lower().split())
         word_counter.update(record["response"].lower().split())
         omcs_counter.update(record["omcs_triples"])
