@@ -118,9 +118,9 @@ if __name__ == "__main__":
     print('start to generate the prediction')
     tmp_infer_command = ['python', 'infer.py', args.folder + '/cache/model/best_model.pt', args.folder + '/test.json', args.folder + '/cache/results/pred.test.txt']
     subprocess.run(tmp_infer_command)
-    print('start to evaluate')
-    tmp_evaluate_command = ['perl', 'scripts/multi-bleu.perl', 'test.response.txt', '<', args.folder + '/cache/results/pred.test.txt']
-    subprocess.run(tmp_evaluate_command)
+    # print('start to evaluate')
+    # tmp_evaluate_command = ['perl', 'scripts/multi-bleu.perl', 'test.response.txt', '<', args.folder + '/cache/results/pred.test.txt']
+    # subprocess.run(tmp_evaluate_command)
     # print(tmp_result.decode('utf-8'))
 #perl scripts/multi-bleu.perl test.response.txt < data/conceptnet/cache/results/pred.test.txt
 
