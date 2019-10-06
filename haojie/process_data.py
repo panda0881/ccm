@@ -60,6 +60,18 @@ def process_data(kg_path, output_path):
 
     tmp_knowledge = list(set(tmp_knowledge))
 
+    all_knowledge = list()
+    all_knowledge_dict = dict()
+    for tmp_k in tmp_knowledge:
+        all_knowledge.append({'head': tmp_k.split('$')[0], 'tail': tmp_k.split('$')[2], 'relation': tmp_k.split('$')[1]})
+        if tmp_k.split('$')[0] not in all_knowledge_dict:
+            all_knowledge_dict[tmp_k.split('$')[0]] = list()
+        all_knowledge_dict[tmp_k.split('$')[0]].append(tmp_k)
+        if tmp_k.split('$')[2] not in all_knowledge_dict:
+            all_knowledge_dict[tmp_k.split('$')[2]] = list()
+        all_knowledge_dict[tmp_k.split('$')[2]].append(tmp_k)
+
+
     with open('/home/guest/hzhangal/ccm/dialog_dataset/formatted_train.json', 'r', encoding='utf-8') as f:
         train_data = json.load(f)
 
@@ -76,9 +88,13 @@ def process_data(kg_path, output_path):
         new_example['post'] = tmp_example['post']
         new_example['response'] = tmp_example['response']
         new_example['omcs_triplets'] = list()
-        for tmp_k in tmp_knowledge:
-            if tmp_k.split('$')[0] in tmp_example['post'] or tmp_k.split('$')[1] in tmp_example['post']:
-                new_example['omcs_triplets'].append(tmp_k)
+        # for tmp_k in all_knowledge:
+        #     if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
+        #         new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
+        for tmp_e in all_knowledge_dict:
+            if tmp_e in tmp_example['post']:
+                new_example['omcs_triplets'] += all_knowledge_dict[tmp_e]
+        new_example['omcs_triplets'] = list(set(new_example['omcs_triplets']))
         new_train_data.append(new_example)
 
     print('We are working on dev data')
@@ -88,9 +104,13 @@ def process_data(kg_path, output_path):
         new_example['post'] = tmp_example['post']
         new_example['response'] = tmp_example['response']
         new_example['omcs_triplets'] = list()
-        for tmp_k in tmp_knowledge:
-            if tmp_k.split('$')[0] in tmp_example['post'] or tmp_k.split('$')[1] in tmp_example['post']:
-                new_example['omcs_triplets'].append(tmp_k)
+        # for tmp_k in all_knowledge:
+        #     if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
+        #         new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
+        for tmp_e in all_knowledge_dict:
+            if tmp_e in tmp_example['post']:
+                new_example['omcs_triplets'] += all_knowledge_dict[tmp_e]
+        new_example['omcs_triplets'] = list(set(new_example['omcs_triplets']))
         new_dev_data.append(new_example)
 
     print('We are working on test data')
@@ -100,9 +120,13 @@ def process_data(kg_path, output_path):
         new_example['post'] = tmp_example['post']
         new_example['response'] = tmp_example['response']
         new_example['omcs_triplets'] = list()
-        for tmp_k in tmp_knowledge:
-            if tmp_k.split('$')[0] in tmp_example['post'] or tmp_k.split('$')[1] in tmp_example['post']:
-                new_example['omcs_triplets'].append(tmp_k)
+        # for tmp_k in all_knowledge:
+        #     if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
+        #         new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
+        for tmp_e in all_knowledge_dict:
+            if tmp_e in tmp_example['post']:
+                new_example['omcs_triplets'] += all_knowledge_dict[tmp_e]
+        new_example['omcs_triplets'] = list(set(new_example['omcs_triplets']))
         new_test_data.append(new_example)
 
     with open(output_path+'train.json', 'w', encoding='utf-8') as f:
@@ -152,13 +176,15 @@ parser.add_argument("--output", type=str, default='/home/guest/hzhangal/ccm/haoj
                         help="choose which gpu to use")
 args = parser.parse_args()
 
-process_data(args.input, args.output)
 
+if args.input == 'all':
+    process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
+    process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txtt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
+    process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
+    process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
+    process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
+    process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
+else:
+    process_data(args.input, args.output)
 
-# process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
-# process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txtt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
-# process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
-# process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
-# process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
-# process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
 print('end')
