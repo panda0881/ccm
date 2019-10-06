@@ -87,14 +87,14 @@ def process_data(kg_path, output_path):
         new_example = dict()
         new_example['post'] = tmp_example['post']
         new_example['response'] = tmp_example['response']
-        new_example['omcs_triplets'] = list()
+        new_example['omcs_triples'] = list()
         # for tmp_k in all_knowledge:
         #     if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
         #         new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
         for tmp_e in all_knowledge_dict:
             if tmp_e in tmp_example['post']:
-                new_example['omcs_triplets'] += all_knowledge_dict[tmp_e]
-        new_example['omcs_triples'] = list(set(new_example['omcs_triplets']))
+                new_example['omcs_triples'] += all_knowledge_dict[tmp_e]
+        new_example['omcs_triples'] = list(set(new_example['omcs_triples']))
         new_train_data.append(new_example)
 
     print('We are working on dev data')
@@ -103,14 +103,14 @@ def process_data(kg_path, output_path):
         new_example = dict()
         new_example['post'] = tmp_example['post']
         new_example['response'] = tmp_example['response']
-        new_example['omcs_triplets'] = list()
+        new_example['omcs_triples'] = list()
         # for tmp_k in all_knowledge:
         #     if tmp_k['head'] in tmp_example['post'] or tmp_k['tail'] in tmp_example['post']:
         #         new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
         for tmp_e in all_knowledge_dict:
             if tmp_e in tmp_example['post']:
-                new_example['omcs_triplets'] += all_knowledge_dict[tmp_e]
-        new_example['omcs_triples'] = list(set(new_example['omcs_triplets']))
+                new_example['omcs_triples'] += all_knowledge_dict[tmp_e]
+        new_example['omcs_triples'] = list(set(new_example['omcs_triples']))
         new_dev_data.append(new_example)
 
     print('We are working on test data')
@@ -125,8 +125,8 @@ def process_data(kg_path, output_path):
         #         new_example['omcs_triplets'].append(tmp_k['head']+'$'+tmp_k['relation']+'$'+tmp_k['tail'])
         for tmp_e in all_knowledge_dict:
             if tmp_e in tmp_example['post']:
-                new_example['omcs_triplets'] += all_knowledge_dict[tmp_e]
-        new_example['omcs_triples'] = list(set(new_example['omcs_triplets']))
+                new_example['omcs_triples'] += all_knowledge_dict[tmp_e]
+        new_example['omcs_triples'] = list(set(new_example['omcs_triples']))
         new_test_data.append(new_example)
 
     with open(output_path+'train.json', 'w', encoding='utf-8') as f:

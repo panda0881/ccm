@@ -137,21 +137,19 @@ def model_evaluate(model_path, inp_path):
     overall_bleu_2_score = 0
     overall_bleu_3_score = 0
     overall_bleu_4_score = 0
-    overall_bleu_score = 0
     for i, raw_predict in enumerate(pred_list):
         tmp_predict = list()
         for w in raw_predict:
             if w == BOS_WORD or w == EOS_WORD:
                 continue
             tmp_predict.append(w)
-        overall_bleu_1_score += sentence_bleu([test_data], tmp_predict, weights=(1, 0, 0, 0))
-        overall_bleu_2_score += sentence_bleu([gold_answer], tmp_predict, weights=(0, 1, 0, 0))
-        overall_bleu_3_score += sentence_bleu([gold_answer], tmp_predict, weights=(0, 0, 1, 0))
-        overall_bleu_4_score += sentence_bleu([gold_answer], tmp_predict, weights=(0, 0, 0, 1))
-        overall_bleu_score += sentence_bleu([gold_answer], tmp_predict, weights=(0.25, 0.25, 0.25, 0.25))
+        overall_bleu_1_score += sentence_bleu([test_data[i]['response'].split(' ')], tmp_predict, weights=(1, 0, 0, 0))
+        overall_bleu_2_score += sentence_bleu([test_data[i]['response'].split(' ')], tmp_predict, weights=(0.5, 0.5, 0, 0))
+        overall_bleu_3_score += sentence_bleu([test_data[i]['response'].split(' ')], tmp_predict, weights=(0.33, 0.33, 0.34, 0))
+        overall_bleu_4_score += sentence_bleu([test_data[i]['response'].split(' ')], tmp_predict, weights=(0.25, 0.25, 0.25, 0.25))
     print('Average bleu score:', 'bleu1:', overall_bleu_1_score / len(pred_list), 'bleu2:',
           overall_bleu_2_score / len(pred_list), 'bleu3:', overall_bleu_3_score / len(pred_list), 'bleu4:',
-          overall_bleu_4_score / len(pred_list), 'average:', overall_bleu_score / len(pred_list))
+          overall_bleu_4_score / len(pred_list))
 
 
 
@@ -176,6 +174,6 @@ if __name__ == "__main__":
     train_model(opt)
 
     print('start to evaluate')
-    model_infer(args.folder + '/cache/model/best_model.pt', args.folder + '/test.json')
+    model_evaluate(args.folder + '/cache/model/best_model.pt', args.folder + '/test.json')
 
 print('end')
