@@ -179,8 +179,9 @@ if __name__ == "__main__":
     # subprocess.run(tmp_infer_command)
     print('start to evaluate')
     tmp_evaluate_command = ['perl', 'scripts/multi-bleu.perl', 'test.response.txt', '<', args.folder + '/cache/results/pred.test.txt']
-    tmp_result = subprocess.check_output(tmp_evaluate_command)
-    print(tmp_result.decode('utf-8'))
+    tmp_result = subprocess.call(tmp_evaluate_command)
+    # print(tmp_result.decode('utf-8'))
+    print(tmp_result)
 #perl scripts/multi-bleu.perl test.response.txt < data/conceptnet/cache/results/pred.test.txt
 
 print('end')
