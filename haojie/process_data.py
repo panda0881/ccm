@@ -49,7 +49,6 @@ def process_data(kg_path, output_path):
                 tmp_relation = tmp_words[0]
                 tmp_tail = tmp_words[2]
                 tmp_knowledge.append(tmp_head+'$'+tmp_relation+'$'+tmp_tail)
-                break
 
     with open(kg_path, 'r', encoding='utf-8') as f:
         for line in f:
@@ -58,7 +57,6 @@ def process_data(kg_path, output_path):
             tmp_relation = tmp_words[0]
             tmp_tail = tmp_words[2]
             tmp_knowledge.append(tmp_head + '$' + tmp_relation + '$' + tmp_tail)
-            break
 
     tmp_knowledge = list(set(tmp_knowledge))
 
