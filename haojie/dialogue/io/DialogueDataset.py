@@ -65,12 +65,12 @@ class Batch(object):
         #     t[3], self.opt.max_aser_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
         # self.aser_triple_inps = torch.LongTensor(aser_triple_inps)
 
-        omcs_lens = [len(t[4]) for t in data]
+        omcs_lens = [len(t[2]) for t in data]
         self.omcs_lens = torch.LongTensor(omcs_lens)
-        omcs_id_inps = [padding_list(t[4], self.opt.max_omcs_triples, pad_idx) for t in data]
+        omcs_id_inps = [padding_list(t[2], self.opt.max_omcs_triples, pad_idx) for t in data]
         self.omcs_id_inps = torch.LongTensor(omcs_id_inps)
         omcs_triple_inps = [padding_list(
-            t[5], self.opt.max_omcs_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
+            t[3], self.opt.max_omcs_triples, [pad_idx, pad_idx, pad_idx]) for t in data]
         self.omcs_triple_inps = torch.LongTensor(omcs_triple_inps)
 
         # knowly_lens = [len(t[6]) for t in data]
