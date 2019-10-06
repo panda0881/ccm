@@ -155,7 +155,7 @@ def model_evaluate(model_path, inp_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="config/config_omcs2seq.json",
+    parser.add_argument("--config", type=str, default="configs/config_omcs2seq.json",
                         help="configuration file path")
     parser.add_argument("--folder", type=str, default="data/conceptnet",
                         help="which data to train on")
