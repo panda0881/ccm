@@ -1,3 +1,6 @@
+import ujson as json
+
+
 import argparse
 import os
 import time
@@ -88,15 +91,18 @@ def train_model(train_opt):
     trainer.train()
     logger.info("Total training time: %.2f s" % (time.time() - total_st))
 
+test_dada = list()
+with open('data/test.json', 'r', encoding='utf-8') as f:
+    # test_dada = json.load(f)
+    for line in f:
+        test_dada.append(json.loads(line))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-config", type=str, default="config/config.json",
                         help="configuration file path")
-    parser.add_argument("-gpu", type=str, default="0",
-                        help="choose which gpu to use")
-    parser.add_argument("-gpu", type=str, default="0",
-                        help="choose which gpu to use")
     args = parser.parse_args()
     opt = Config(json.load(open(args.config)))
     train_model(opt)
+
+print('end')
