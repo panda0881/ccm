@@ -45,17 +45,17 @@ def process_data(kg_path, output_path):
         with open('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', 'r', encoding='utf-8') as f:
             for line in f:
                 tmp_words = line[:-1].split('\t')
-                tmp_head = tmp_words[1]
-                tmp_relation = tmp_words[0]
-                tmp_tail = tmp_words[2]
+                tmp_head = tmp_words[1].replace('$', '')
+                tmp_relation = tmp_words[0].replace('$', '')
+                tmp_tail = tmp_words[2].replace('$', '')
                 tmp_knowledge.append(tmp_head+'$'+tmp_relation+'$'+tmp_tail)
 
     with open(kg_path, 'r', encoding='utf-8') as f:
         for line in f:
             tmp_words = line[:-1].split('\t')
-            tmp_head = tmp_words[1]
-            tmp_relation = tmp_words[0]
-            tmp_tail = tmp_words[2]
+            tmp_head = tmp_words[1].replace('$', '')
+            tmp_relation = tmp_words[0].replace('$', '')
+            tmp_tail = tmp_words[2].replace('$', '')
             tmp_knowledge.append(tmp_head + '$' + tmp_relation + '$' + tmp_tail)
 
     tmp_knowledge = list(set(tmp_knowledge))
