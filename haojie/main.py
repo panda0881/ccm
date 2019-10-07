@@ -104,6 +104,8 @@ if __name__ == "__main__":
                         help="which data to train on")
     parser.add_argument("--gpu", type=str, default="0",
                         help="which data to use")
+    parser.add_argument("--save", type=str, default="test",
+                        help="which data to use")
     args = parser.parse_args()
     raw_config = json.load(open(args.config))
     raw_config['meta']['data_dir'] = args.folder
@@ -116,7 +118,7 @@ if __name__ == "__main__":
     opt = Config(raw_config)
     train_model(opt)
     print('start to generate the prediction')
-    tmp_infer_command = ['python', 'infer.py', args.folder + '/cache/model/best_model.pt', args.folder + '/test.json', args.folder + '/cache/results/pred.test.txt']
+    tmp_infer_command = ['python', 'infer.py', args.folder + '/cache/model/best_model.pt', args.folder + '/test.json', args.folder + '/cache/results/pred.' + args.save + '.txt']
     subprocess.run(tmp_infer_command)
     # print('start to evaluate')
     # tmp_evaluate_command = ['perl', 'scripts/multi-bleu.perl', 'test.response.txt', '<', args.folder + '/cache/results/pred.test.txt']
