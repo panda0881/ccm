@@ -170,9 +170,9 @@ def process_data(kg_path, output_path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input", type=str, default='/home/guest/hzhangal/ccm/kgs/conceptnet.txt',
+parser.add_argument("--input", type=str, default='/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt',
                         help="choose which gpu to use")
-parser.add_argument("--output", type=str, default='/home/guest/hzhangal/ccm/haojie/data/conceptnet/',
+parser.add_argument("--output", type=str, default='/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/',
                         help="choose which gpu to use")
 args = parser.parse_args()
 
