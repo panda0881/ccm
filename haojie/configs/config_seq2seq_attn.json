@@ -34,7 +34,7 @@
     "adam_beta2": 0.999,
     "adam_eps": 1e-09,
     "label_smoothing": 0.0,
-    "learning_rate": 0.005,
+    "learning_rate": 0.0005,
     "learning_rate_decay": 0.95,
     "start_decay_steps": 3000,
     "decay_steps": 500,
