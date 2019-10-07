@@ -128,7 +128,7 @@ def analyze_data(kg_path, output_path):
                 if tmp_k['head'] in tmp_example['response']:
                     match_count += 1
     print('all match:', all_count, '/', len(test_data), all_count/len(test_data))
-    print('correct match:', match_count, '/', len(test_data), all_count/len(test_data))
+    print('correct match:', match_count, '/', len(test_data), match_count/len(test_data))
 
 
 
@@ -136,7 +136,7 @@ def analyze_data(kg_path, output_path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input", type=str, default='/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt',
+parser.add_argument("--input", type=str, default='all',
                         help="choose which gpu to use")
 parser.add_argument("--output", type=str, default='/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/',
                         help="choose which gpu to use")
