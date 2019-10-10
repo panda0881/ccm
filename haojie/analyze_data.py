@@ -41,14 +41,14 @@ def analyze_data(kg_path, output_path):
     print('We are working on:', kg_path)
     tmp_knowledge = list()
 
-    # if kg_path != '/home/guest/hzhangal/ccm/kgs/conceptnet.txt':
-    #     with open('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', 'r', encoding='utf-8') as f:
-    #         for line in f:
-    #             tmp_words = line[:-1].split('\t')
-    #             tmp_head = tmp_words[1].replace('$', '')
-    #             tmp_relation = tmp_words[0].replace('$', '')
-    #             tmp_tail = tmp_words[2].replace('$', '')
-    #             tmp_knowledge.append(tmp_head+'$'+tmp_relation+'$'+tmp_tail)
+    if kg_path != '/home/guest/hzhangal/ccm/kgs/conceptnet.txt':
+        with open('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', 'r', encoding='utf-8') as f:
+            for line in f:
+                tmp_words = line[:-1].split('\t')
+                tmp_head = tmp_words[1].replace('$', '')
+                tmp_relation = tmp_words[0].replace('$', '')
+                tmp_tail = tmp_words[2].replace('$', '')
+                tmp_knowledge.append(tmp_head+'$'+tmp_relation+'$'+tmp_tail)
 
     with open(kg_path, 'r', encoding='utf-8') as f:
         for line in f:
@@ -145,11 +145,11 @@ args = parser.parse_args()
 
 if args.input == 'all':
     # analyze_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
-    analyze_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
-    analyze_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
+    # analyze_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
+    # analyze_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
     analyze_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
-    analyze_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
-    analyze_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
+    # analyze_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
+    # analyze_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
 else:
     analyze_data(args.input, args.output)
 
