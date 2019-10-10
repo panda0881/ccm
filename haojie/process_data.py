@@ -179,9 +179,9 @@ args = parser.parse_args()
 
 if args.input == 'all':
     # process_data('/home/guest/hzhangal/ccm/kgs/conceptnet.txt', '/home/guest/hzhangal/ccm/haojie/data/conceptnet/')
-    process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
+    # process_data('/home/guest/hzhangal/ccm/kgs/COMET_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_original_1/')
     # process_data('/home/guest/hzhangal/ccm/kgs/COMET_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/COMET_external_10/')
-    # process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
+    process_data('/home/guest/hzhangal/ccm/kgs/LAMA_original_1.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_original_1/')
     # process_data('/home/guest/hzhangal/ccm/kgs/LAMA_external_10.txt', '/home/guest/hzhangal/ccm/haojie/data/LAMA_external_10/')
     # process_data('/home/guest/hzhangal/ccm/kgs/auto_conceptnet_1_percent.txt', '/home/guest/hzhangal/ccm/haojie/data/auto_conceptnet_1_percent/')
 else:
